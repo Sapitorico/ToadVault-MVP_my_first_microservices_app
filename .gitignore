@@ -1,0 +1,17 @@
+# Ignore virtual environment directory
+venv/
+
+# Ignore environment files
+.env
+.env.testing
+
+# Ignore Python-generated files and directories
+__pycache__/
+*py[cod]
+
+# Ignore pytest cache
+.pytest_cache/
+
+# Node
+**/node_modules
+**/dist
