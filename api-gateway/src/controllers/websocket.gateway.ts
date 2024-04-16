@@ -22,9 +22,9 @@ export class WebsocketGateway
   handleDisconnect(client: Socket) {
     console.log(`Client disconnected: ${client.id}`);
   }
-  @SubscribeMessage('message')
-  handleMessage(@MessageBody() data: any) {
-    console.log(data);
+  @SubscribeMessage('add_to_cart')
+  handleAddToCart(@MessageBody() code: number) {
+    console.log(code);
     this.server.emit('messageserver', 'texto de sapo');
   }
 }

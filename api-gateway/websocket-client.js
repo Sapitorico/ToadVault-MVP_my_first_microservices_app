@@ -14,7 +14,7 @@ socket.on('connect', () => {
   rl.prompt();
 
   rl.on('line', (input) => {
-    socket.emit('message', input.trim());
+    socket.emit('add_to_cart', parseInt(input.trim()));
     rl.prompt();
   });
 
@@ -28,7 +28,6 @@ socket.on('disconnect', () => {
   console.log('Disconnected from server');
 });
 
-// Escuchando el evento 'message' del servidor
 socket.on('messageserver', (message) => {
   console.log('Mensaje recibido del servidor:', message);
 });
