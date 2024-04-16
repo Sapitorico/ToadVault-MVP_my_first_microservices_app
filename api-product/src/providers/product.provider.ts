@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseProvider } from 'src/databases/db_connection';
-import { Product } from 'src/entities/prodcut/prodcut.entity';
+import { Product, ProductData } from 'src/entities/product.entity';
 import * as Joi from 'joi';
 import { ObjectId } from 'mongodb';
 
@@ -8,7 +8,7 @@ import { ObjectId } from 'mongodb';
 export class ProductProvider {
   constructor(private readonly databaseProvider: DatabaseProvider) {}
 
-  async addProduct(productData: any): Promise<{
+  async addProduct(productData: Product): Promise<{
     success: boolean;
     message?: string;
   }> {
@@ -30,7 +30,7 @@ export class ProductProvider {
   async getProdcuts(): Promise<{
     success: boolean;
     message: string;
-    products: any[];
+    products: ProductData[];
   }> {
     const db = this.databaseProvider.getDb();
     const productsCollection = db.collection('products');
@@ -38,13 +38,13 @@ export class ProductProvider {
     return {
       success: true,
       message: 'Products retrieved successfully',
-      products: products,
+      products: products as ProductData[],
     };
   }
 
   async updateProduct(
     id: string,
-    productData: any,
+    productData: Product,
   ): Promise<{
     success: boolean;
     message: string;
@@ -52,7 +52,7 @@ export class ProductProvider {
     if (!ObjectId.isValid(id)) {
       return {
         success: false,
-        message: 'Invalid product ID',
+        message: 'Product not found',
       };
     }
     const db = this.databaseProvider.getDb();
@@ -76,7 +76,46 @@ export class ProductProvider {
     };
   }
 
-  validateProductData(productData: any): {
+  async getProductByBarcodeOrID(barcode_id: string): Promise<{
+    success: boolean;
+    message: string;
+    product?: ProductData;
+  }> {
+    const db = this.databaseProvider.getDb();
+    const productsCollection = db.collection('products');
+    if (!ObjectId.isValid(barcode_id)) {
+      const product = await productsCollection.findOne({
+        barcode: barcode_id,
+      });
+      if (!product) {
+        return {
+          success: false,
+          message: 'Product not found',
+        };
+      }
+      return {
+        success: true,
+        message: 'Product retrieved successfully',
+        product: { ...product } as ProductData,
+      };
+    }
+    const product = await productsCollection.findOne({
+      _id: new ObjectId(barcode_id),
+    });
+    if (!product) {
+      return {
+        success: false,
+        message: 'Product not found',
+      };
+    }
+    return {
+      success: true,
+      message: 'Product retrieved successfully',
+      product: { ...product } as ProductData,
+    };
+  }
+
+  validateProductData(productData: ProductData): {
     success: boolean;
     message?: string;
   } {
@@ -88,8 +127,11 @@ export class ProductProvider {
         })
         .required(),
       name: Joi.string().required(),
-      description: Joi.string().required(),
+      description: Joi.string().allow(''),
       category_id: Joi.string().required(),
+      variants: Joi.array()
+        .items(Joi.object({ name: Joi.string().required() }))
+        .min(0),
     });
 
     const { error } = schema.validate(productData);
@@ -99,7 +141,7 @@ export class ProductProvider {
 
     return { success: true };
   }
-  instantiateProduct(productData: any): Product {
+  instantiateProduct(productData: ProductData): Product {
     const product = new Product(
       productData.barcode,
       productData.name,
@@ -107,7 +149,7 @@ export class ProductProvider {
       productData.category_id,
       new Date(),
       new Date(),
-      [],
+      productData.variants,
     );
 
     return product;

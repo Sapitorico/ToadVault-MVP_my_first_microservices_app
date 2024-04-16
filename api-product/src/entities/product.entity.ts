@@ -1,6 +1,7 @@
-import { Variant } from '../variant/variant.entity';
+import { ObjectId } from 'mongodb';
 
-interface ProductData {
+export interface ProductData {
+  _id?: ObjectId;
   barcode: string;
   name: string;
   description: string;
@@ -20,4 +21,12 @@ export class Product implements ProductData {
     public updated_at: Date,
     public variants: Variant[],
   ) {}
+}
+
+export interface VariantData {
+  name: string;
+}
+
+export class Variant implements VariantData {
+  constructor(public name: string) {}
 }
