@@ -4,10 +4,27 @@ import { Product, ProductData } from 'src/entities/product.entity';
 import * as Joi from 'joi';
 import { ObjectId } from 'mongodb';
 
+/**
+ * ProductProvider class is responsible for handling product-related operations.
+ * It interacts with the DatabaseProvider class to perform CRUD operations on the 'products' collection in the database.
+ *
+ * @class
+ * @public
+ * @constructor
+ * @param {DatabaseProvider} databaseProvider - An instance of the DatabaseProvider class.
+ */
 @Injectable()
 export class ProductProvider {
   constructor(private readonly databaseProvider: DatabaseProvider) {}
 
+  /**
+   * Adds a new product to the database.
+   *
+   * @param productData - The data of the product to be added.
+   * @returns A promise that resolves to an object with the following properties:
+   *   - success: A boolean indicating if the product was added successfully.
+   *   - message: An optional string message. If the product already exists, the message will indicate that.
+   */
   async addProduct(productData: Product): Promise<{
     success: boolean;
     message?: string;
@@ -27,6 +44,14 @@ export class ProductProvider {
     return { success: true, message: 'Product added successfully' };
   }
 
+  /**
+   * Retrieves all products from the database.
+   *
+   * @returns A promise that resolves to an object with the following properties:
+   *   - success: A boolean indicating if the products were retrieved successfully.
+   *   - message: A string message indicating the status of the retrieval.
+   *   - products: An array of ProductData objects representing the retrieved products.
+   */
   async getProdcuts(): Promise<{
     success: boolean;
     message: string;
@@ -42,6 +67,15 @@ export class ProductProvider {
     };
   }
 
+  /**
+   * Updates a product in the database.
+   *
+   * @param id - The ID of the product to be updated.
+   * @param productData - The updated data of the product.
+   * @returns A promise that resolves to an object with the following properties:
+   *   - success: A boolean indicating if the product was updated successfully.
+   *   - message: A string message indicating the status of the update.
+   */
   async updateProduct(
     id: string,
     productData: Product,
@@ -76,6 +110,15 @@ export class ProductProvider {
     };
   }
 
+  /**
+   * Retrieves a product from the database by barcode or ID.
+   *
+   * @param barcode_id - The barcode or ID of the product to retrieve.
+   * @returns A promise that resolves to an object with the following properties:
+   *   - success: A boolean indicating if the product was retrieved successfully.
+   *   - message: A string message indicating the status of the retrieval.
+   *   - product: An optional ProductData object representing the retrieved product.
+   */
   async getProductByBarcodeOrID(barcode_id: string): Promise<{
     success: boolean;
     message: string;
@@ -115,6 +158,14 @@ export class ProductProvider {
     };
   }
 
+  /**
+   * Validates the product data.
+   *
+   * @param productData - The data of the product to be validated.
+   * @returns An object with the following properties:
+   *   - success: A boolean indicating if the product data is valid.
+   *   - message: An optional string message. If the product data is invalid, the message will indicate the specific validation error.
+   */
   validateProductData(productData: ProductData): {
     success: boolean;
     message?: string;
@@ -141,6 +192,13 @@ export class ProductProvider {
 
     return { success: true };
   }
+
+  /**
+   * Instantiates a new Product object based on the provided product data.
+   *
+   * @param productData - The data of the product to be instantiated.
+   * @returns A new Product object.
+   */
   instantiateProduct(productData: ProductData): Product {
     const product = new Product(
       productData.barcode,
