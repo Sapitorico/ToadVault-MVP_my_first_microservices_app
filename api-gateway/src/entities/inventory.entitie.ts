@@ -1,7 +1,4 @@
-import { ObjectId } from 'mongodb';
-
 export interface InventoryData {
-  _id?: ObjectId;
   barcode: string;
   name: string;
   price: number;

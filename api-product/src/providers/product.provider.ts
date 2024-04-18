@@ -28,6 +28,7 @@ export class ProductProvider {
   async addProduct(productData: Product): Promise<{
     success: boolean;
     message?: string;
+    product?: ProductData;
   }> {
     const db = this.databaseProvider.getDb();
     const productsCollection = db.collection('products');
@@ -37,11 +38,19 @@ export class ProductProvider {
     if (product) {
       return {
         success: false,
-        message: 'Product with this barcode already exists',
+        message: 'The product with this barcode already exists in the database',
+        product: {} as ProductData,
       };
     }
-    await productsCollection.insertOne(productData);
-    return { success: true, message: 'Product added successfully' };
+    const insertResult = await productsCollection.insertOne(productData);
+    const newProduct = await productsCollection.findOne({
+      _id: insertResult.insertedId,
+    });
+    return {
+      success: true,
+      message: 'Product added successfully',
+      product: newProduct as ProductData,
+    };
   }
 
   /**
@@ -159,35 +168,49 @@ export class ProductProvider {
   }
 
   /**
-   * Validates the product data.
+   * Verifies if the product data contains a barcode or an id and returns the one that has a value.
    *
-   * @param productData - The data of the product to be validated.
-   * @returns An object with the following properties:
-   *   - success: A boolean indicating if the product data is valid.
-   *   - message: An optional string message. If the product data is invalid, the message will indicate the specific validation error.
+   * @param productData - The data of the product to be verified.
+   * @returns The barcode or id of the product if it has a value, or an object with success: false and a message otherwise.
    */
+  getBarcodeOrId(
+    itemData: any,
+  ): string | { success: boolean; message: string } {
+    if (itemData.barcode && itemData.barcode.trim() !== '') {
+      return itemData.barcode;
+    } else if (itemData.id && itemData.id.trim() !== '') {
+      return itemData.id;
+    } else {
+      return { success: false, message: 'Product requires a barcode or id.' };
+    }
+  }
+
   validateProductData(productData: ProductData): {
     success: boolean;
     message?: string;
   } {
-    const schema = Joi.object({
-      barcode: Joi.string()
-        .pattern(/^\d+$/)
-        .messages({
-          'string.pattern.base': "'barcode' must be a string of numbers",
-        })
-        .required(),
-      name: Joi.string().required(),
-      description: Joi.string().allow(''),
-      category_id: Joi.string().required(),
-      variants: Joi.array()
-        .items(Joi.object({ name: Joi.string().required() }))
-        .min(0),
-    });
+    if (
+      typeof productData.barcode !== 'string' ||
+      !/^\d+$/.test(productData.barcode)
+    ) {
+      return {
+        success: false,
+        message: "'barcode' must be a string of numbers",
+      };
+    }
 
-    const { error } = schema.validate(productData);
-    if (error) {
-      return { success: false, message: error.details[0].message };
+    if (typeof productData.name !== 'string') {
+      return { success: false, message: "'name' must be a string" };
+    }
+
+    if (Array.isArray(productData.variants)) {
+      for (let variant of productData.variants) {
+        if (typeof variant.name !== 'string') {
+          return { success: false, message: "'variant.name' must be a string" };
+        }
+      }
+    } else {
+      return { success: false, message: "'variants' must be an array" };
     }
 
     return { success: true };
@@ -203,8 +226,6 @@ export class ProductProvider {
     const product = new Product(
       productData.barcode,
       productData.name,
-      productData.description,
-      productData.category_id,
       new Date(),
       new Date(),
       productData.variants,

@@ -1,8 +1,11 @@
 import { Module } from '@nestjs/common';
-import { GatewayModule } from './modules/websocket.module';
+import { ClientsModule, Transport } from '@nestjs/microservices';
+import { InventoryModule } from './modules/inventory.gateway.module';
+import { ProductModule } from './modules/products.gateway.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [GatewayModule],
+  imports: [InventoryModule, ProductModule, ConfigModule.forRoot()],
   controllers: [],
   providers: [],
 })

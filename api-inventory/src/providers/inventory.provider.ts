@@ -129,21 +129,12 @@ export class InventoryProvider {
    *   - success: A boolean indicating if the validation was successful.
    *   - message: An optional string message indicating the result of the validation.
    */
-  validateStore(storeInfo: InventoryData): {
+  validateStore(storeId: string): {
     success: boolean;
     message?: string;
   } {
-    const schema = Joi.object({
-      store_id: Joi.string()
-        .pattern(/^\d+$/)
-        .messages({
-          'string.pattern.base': "'store_id' must be a string of numbers",
-        })
-        .required(),
-    });
-    const { error } = schema.validate(storeInfo);
-    if (error) {
-      return { success: false, message: error.details[0].message };
+    if (typeof storeId !== 'string') {
+      return { success: false, message: "'store_id' must be a string" };
     }
     return { success: true };
   }
@@ -160,26 +151,36 @@ export class InventoryProvider {
     success: boolean;
     message?: string;
   } {
-    const schema = Joi.object({
-      barcode: Joi.string()
-        .pattern(/^\d+$/)
-        .messages({
-          'string.pattern.base': "'barcode' must be a string of numbers",
-        })
-        .required(),
-      name: Joi.string().required(),
-      description: Joi.string().allow(''),
-      price: Joi.number().required(),
-      stock: Joi.number().required(),
-      supplier: Joi.string().allow(''),
-      variants: Joi.array()
-        .items(Joi.object({ name: Joi.string().required() }))
-        .min(0),
-    });
+    if (
+      typeof itemData.barcode !== 'string' ||
+      !/^\d+$/.test(itemData.barcode)
+    ) {
+      return {
+        success: false,
+        message: "'barcode' must be a string of numbers",
+      };
+    }
 
-    const { error } = schema.validate(itemData);
-    if (error) {
-      return { success: false, message: error.details[0].message };
+    if (typeof itemData.name !== 'string') {
+      return { success: false, message: "'name' must be a string" };
+    }
+
+    if (typeof itemData.price !== 'number') {
+      return { success: false, message: "'price' must be a number" };
+    }
+
+    if (typeof itemData.stock !== 'number') {
+      return { success: false, message: "'stock' must be a number" };
+    }
+
+    if (Array.isArray(itemData.variants)) {
+      for (let variant of itemData.variants) {
+        if (typeof variant.name !== 'string') {
+          return { success: false, message: "'variant.name' must be a string" };
+        }
+      }
+    } else {
+      return { success: false, message: "'variants' must be an array" };
     }
 
     return { success: true };
@@ -195,10 +196,8 @@ export class InventoryProvider {
     const item = new Inventory(
       ItemData.barcode,
       ItemData.name,
-      ItemData.description,
       ItemData.price,
       ItemData.stock,
-      ItemData.supplier,
       new Date(),
       new Date(),
       ItemData.variants,

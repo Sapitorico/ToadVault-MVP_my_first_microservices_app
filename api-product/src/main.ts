@@ -1,13 +1,17 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-
-// Configurar el prefijo de la API y la versión
-const apiPrefix = process.env.API_PREFIX;
-const apiVersion = process.env.VERSION;
+import { Transport, MicroserviceOptions } from '@nestjs/microservices';
+import { ProductModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  app.setGlobalPrefix(`${apiPrefix}/${apiVersion}`);
-  await app.listen(process.env.PORT || 3000);
+  const app = await NestFactory.createMicroservice<MicroserviceOptions>(
+    ProductModule,
+    {
+      transport: Transport.TCP,
+      options: {
+        port: 3025,
+      },
+    },
+  );
+  await app.listen();
 }
 bootstrap();

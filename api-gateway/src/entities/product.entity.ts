@@ -1,7 +1,4 @@
-import { ObjectId } from 'mongodb';
-
 export interface ProductData {
-  _id?: ObjectId;
   barcode: string;
   name: string;
   created_at: Date;

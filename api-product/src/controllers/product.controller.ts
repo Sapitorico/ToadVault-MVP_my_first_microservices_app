@@ -1,4 +1,5 @@
 import { Controller, Get, Res, Post, Body, Put, Param } from '@nestjs/common';
+import { EventPattern } from '@nestjs/microservices';
 import { Response } from 'express';
 import { Product } from 'src/entities/product.entity';
 import { ProductProvider } from 'src/providers/product.provider';
@@ -18,15 +19,15 @@ export class ProductController {
    * @param res - The response object.
    * @returns The response with the created product.
    */
-  @Post()
-  async createProduct(@Body() productData: Product, @Res() res: Response) {
+  @EventPattern('add_new_product')
+  async createProduct(productData: Product) {
     const validation = this.productProvider.validateProductData(productData);
     if (!validation.success) {
-      return res.status(400).json(validation);
+      return validation;
     }
     const product = this.productProvider.instantiateProduct(productData);
     const response = await this.productProvider.addProduct(product);
-    return res.status(201).json(response);
+    return response;
   }
 
   /**
@@ -70,13 +71,15 @@ export class ProductController {
    * @param res - The response object.
    * @returns The response with the retrieved product.
    */
-  @Get(':barcode_id')
-  async getProdcutById(
-    @Param('barcode_id') barcode_id: string,
-    @Res() res: Response,
-  ) {
-    const response =
-      await this.productProvider.getProductByBarcodeOrID(barcode_id);
-    return res.status(200).json(response);
+  @EventPattern('get_prodcut_by_barcode_or_id')
+  async getProdcutById(itemData: string) {
+    const code = this.productProvider.getBarcodeOrId(itemData);
+    if (typeof code === 'object' && !code.success) {
+      return code;
+    }
+    const response = await this.productProvider.getProductByBarcodeOrID(
+      code as string,
+    );
+    return response;
   }
 }

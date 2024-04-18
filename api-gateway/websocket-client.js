@@ -14,7 +14,7 @@ socket.on('connect', () => {
   rl.prompt();
 
   rl.on('line', (input) => {
-    socket.emit('add_to_cart', parseInt(input.trim()));
+    socket.emit('add_item', parseInt(input.trim()));
     rl.prompt();
   });
 

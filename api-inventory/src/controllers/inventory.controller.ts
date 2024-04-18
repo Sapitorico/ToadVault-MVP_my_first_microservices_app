@@ -1,4 +1,5 @@
 import { Body, Controller, Get, Param, Post, Res } from '@nestjs/common';
+import { EventPattern } from '@nestjs/microservices';
 import { Response } from 'express';
 import { InventoryData } from 'src/entities/inventory.entitie';
 import { InventoryProvider } from 'src/providers/inventory.provider';
@@ -18,19 +19,18 @@ export class InventoryController {
    * @param res - The response object used to send the HTTP response.
    * @returns The response object with the status and data of the added item.
    */
-  @Post(':storeId')
-  async addItemToInventory(
-    @Param('storeid') storeId: string,
-    @Body() inventoryData: InventoryData,
-    @Res() res: Response,
-  ) {
+  @EventPattern('add_new_item')
+  async addItemToInventory(data: any) {
+    const storeId = data.storeId;
+    const inventoryData = data.itemData;
     const validate = this.inventoryProvider.validateItemData(inventoryData);
+    console.log(validate);
     if (!validate.success) {
-      return res.status(400).json(validate);
+      return validate;
     }
     const item = this.inventoryProvider.instantiateItem(inventoryData);
     const response = await this.inventoryProvider.addItem(storeId, item);
-    return res.status(201).json(response);
+    return response;
   }
 
   /**
@@ -40,10 +40,10 @@ export class InventoryController {
    * @param res - The response object used to send the HTTP response.
    * @returns The response object with the status and data of the inventory.
    */
-  @Get(':storeId')
-  async getInventory(@Param('storeId') storeId: string, @Res() res: Response) {
+  @EventPattern('get_inventory')
+  async getInventory(storeId: string) {
     const response = await this.inventoryProvider.getInventory(storeId);
-    res.status(200).json(response);
+    return response;
   }
 
   /**
@@ -54,20 +54,18 @@ export class InventoryController {
    * @param res - The response object used to send the HTTP response.
    * @returns The response object with the status and data of the retrieved item.
    */
-  @Get('item/:barcode_id')
-  async getItem(
-    @Param('barcode_id') barcode_id: string,
-    @Body() storeInfo: any,
-    @Res() res: Response,
-  ) {
-    const validate = this.inventoryProvider.validateStore(storeInfo);
+  @EventPattern('get_item_by_barcode')
+  async getItem(data: any) {
+    const storeId = data.storeId;
+    const barcode = data.barcode;
+    const validate = this.inventoryProvider.validateStore(storeId);
     if (!validate.success) {
-      return res.status(400).json(validate);
+      return validate;
     }
     const response = await this.inventoryProvider.getItemByBarcodeOrID(
-      storeInfo.store_id,
-      barcode_id,
+      storeId,
+      barcode,
     );
-    return res.status(200).json(response);
+    return response;
   }
 }
