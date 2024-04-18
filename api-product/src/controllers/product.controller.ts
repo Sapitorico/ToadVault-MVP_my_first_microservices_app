@@ -12,13 +12,6 @@ import { ProductProvider } from 'src/providers/product.provider';
 export class ProductController {
   constructor(private readonly productProvider: ProductProvider) {}
 
-  /**
-   * Creates a new product.
-   *
-   * @param productData - The data of the product to be created.
-   * @param res - The response object.
-   * @returns The response with the created product.
-   */
   @EventPattern('add_new_product')
   async createProduct(productData: Product) {
     const validation = this.productProvider.validateProductData(productData);
@@ -30,26 +23,12 @@ export class ProductController {
     return response;
   }
 
-  /**
-   * Retrieves all products.
-   *
-   * @param res - The response object.
-   * @returns The response with the list of products.
-   */
   @Get()
   async getProducts(@Res() res: Response) {
     const response = await this.productProvider.getProdcuts();
     res.status(200).json(response);
   }
 
-  /**
-   * Updates a product by adding variants.
-   *
-   * @param id - The ID of the product to be updated.
-   * @param productData - The updated data of the product.
-   * @param res - The response object.
-   * @returns The response with the updated product.
-   */
   @Put(':id')
   async addVariants(
     @Param('id') id: string,
@@ -64,22 +43,13 @@ export class ProductController {
     return res.status(200).json(response);
   }
 
-  /**
-   * Retrieves a product by its barcode ID.
-   *
-   * @param barcode_id - The barcode ID of the product.
-   * @param res - The response object.
-   * @returns The response with the retrieved product.
-   */
   @EventPattern('get_prodcut_by_barcode_or_id')
-  async getProdcutById(itemData: string) {
-    const code = this.productProvider.getBarcodeOrId(itemData);
+  async getProdcutById(barcode: string) {
+    const code = this.productProvider.verifyBarcode(barcode);
     if (typeof code === 'object' && !code.success) {
       return code;
     }
-    const response = await this.productProvider.getProductByBarcodeOrID(
-      code as string,
-    );
+    const response = await this.productProvider.getProductByBarcode(barcode);
     return response;
   }
 }

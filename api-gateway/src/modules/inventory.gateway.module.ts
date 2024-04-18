@@ -5,6 +5,9 @@ import { InventoryController } from 'src/controllers/inventory.gateway';
 import { InventoryProvider } from 'src/providers/inventory.gateway.provider';
 import { ProductProvider } from 'src/providers/product.gateway.provider';
 
+/**
+ * Represents the Inventory module of the API Gateway.
+ */
 @Module({
   imports: [
     ConfigModule.forRoot(),

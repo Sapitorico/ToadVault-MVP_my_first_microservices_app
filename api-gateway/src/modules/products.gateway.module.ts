@@ -3,6 +3,9 @@ import { ConfigModule } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ProductProvider } from 'src/providers/product.gateway.provider';
 
+/**
+ * Represents the module responsible for managing products in the API gateway.
+ */
 @Module({
   imports: [
     ConfigModule.forRoot(),
