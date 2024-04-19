@@ -1,13 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseProvider } from 'src/databases/db_connection';
 import { Product, ProductData } from 'src/entities/product.entity';
-import * as Joi from 'joi';
 import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class ProductProvider {
   constructor(private readonly databaseProvider: DatabaseProvider) {}
 
+  /**
+   * Adds a new product to the database.
+   * @param productData - The data of the product to be added.
+   * @returns A promise that resolves to an object containing the status, success, message, and product data.
+   */
   async addProduct(productData: Product): Promise<{
     status: number;
     success: boolean;
@@ -39,6 +43,10 @@ export class ProductProvider {
     };
   }
 
+  /**
+   * Retrieves all products from the database.
+   * @returns A promise that resolves to an object containing the status, success, message, and array of product data.
+   */
   async getProdcuts(): Promise<{
     status: number;
     success: boolean;
@@ -56,6 +64,12 @@ export class ProductProvider {
     };
   }
 
+  /**
+   * Updates a product in the database.
+   * @param id - The ID of the product to be updated.
+   * @param productData - The updated data of the product.
+   * @returns A promise that resolves to an object containing the status, success, and message.
+   */
   async updateProduct(
     id: string,
     productData: Product,
@@ -94,6 +108,11 @@ export class ProductProvider {
     };
   }
 
+  /**
+   * Retrieves a product from the database by its barcode.
+   * @param barcode - The barcode of the product to be retrieved.
+   * @returns A promise that resolves to an object containing the status, success, message, and product data.
+   */
   async getProductByBarcode(barcode: string): Promise<{
     status: number;
     success: boolean;
@@ -120,13 +139,23 @@ export class ProductProvider {
     };
   }
 
+  /**
+   * Verifies if a barcode is valid.
+   * @param barcode - The barcode to be verified.
+   * @returns An object containing the success status and an optional message.
+   */
   verifyBarcode(barcode: string): { success: boolean; message?: string } {
-    if (!barcode && barcode.trim() == '') {
+    if (!barcode || barcode.trim() == '') {
       return { success: false, message: 'Product requires a barcode' };
     }
     return { success: true };
   }
 
+  /**
+   * Validates the data of a product.
+   * @param productData - The data of the product to be validated.
+   * @returns An object containing the success status and an optional message.
+   */
   validateProductData(productData: ProductData): {
     success: boolean;
     message?: string;
@@ -145,24 +174,13 @@ export class ProductProvider {
       return { success: false, message: "'name' must be a string" };
     }
 
-    if (Array.isArray(productData.variants)) {
-      for (let variant of productData.variants) {
-        if (typeof variant.name !== 'string') {
-          return { success: false, message: "'variant.name' must be a string" };
-        }
-      }
-    } else {
-      return { success: false, message: "'variants' must be an array" };
-    }
-
     return { success: true };
   }
 
   /**
-   * Instantiates a new Product object based on the provided product data.
-   *
+   * Instantiates a new Product object.
    * @param productData - The data of the product to be instantiated.
-   * @returns A new Product object.
+   * @returns The instantiated Product object.
    */
   instantiateProduct(productData: ProductData): Product {
     const product = new Product(
@@ -170,7 +188,6 @@ export class ProductProvider {
       productData.name,
       new Date(),
       new Date(),
-      productData.variants,
     );
 
     return product;

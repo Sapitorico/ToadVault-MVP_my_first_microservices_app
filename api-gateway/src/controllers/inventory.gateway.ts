@@ -1,13 +1,24 @@
-import { Body, Controller, Get, Param, Post, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Put,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { ProductData } from 'src/entities/product.entity';
 import { Response } from 'express';
 import { InventoryProvider } from 'src/providers/inventory.gateway.provider';
 import { ProductProvider } from 'src/providers/product.gateway.provider';
+import { AuthGuard } from 'src/guards/auth.gateway.provider';
 
 /**
  * Controller for managing inventory-related operations.
  */
 @Controller('inventory')
+@UseGuards(AuthGuard)
 export class InventoryController {
   constructor(
     private readonly inventoryProvider: InventoryProvider,
@@ -80,12 +91,6 @@ export class InventoryController {
     @Param('barcode') barcode: string,
     @Res() res: Response,
   ) {
-    const validate = this.inventoryProvider.validateBarcode(barcode);
-    if (!validate.success) {
-      return res
-        .status(validate.status as number)
-        .json({ success: validate.success, message: validate.message });
-    }
     const response = await this.inventoryProvider.getItemBybarcode(
       storeId,
       barcode,

@@ -91,24 +91,6 @@ export class InventoryProvider {
       };
     }
 
-    if (Array.isArray(itemData.variants)) {
-      for (let variant of itemData.variants) {
-        if (typeof variant.name !== 'string') {
-          return {
-            status: 400,
-            success: false,
-            message: "'variant.name' must be a string",
-          };
-        }
-      }
-    } else {
-      return {
-        status: 400,
-        success: false,
-        message: "'variants' must be an array",
-      };
-    }
-
     return { success: true };
   }
 
@@ -120,7 +102,6 @@ export class InventoryProvider {
       itemData.stock,
       new Date(),
       new Date(),
-      prodcutData.variants,
     );
 
     return item;

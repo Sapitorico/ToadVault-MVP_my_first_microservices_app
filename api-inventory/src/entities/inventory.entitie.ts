@@ -8,7 +8,6 @@ export interface InventoryData {
   stock: number;
   created_at: Date;
   updated_at: Date;
-  variants: Variant[];
 }
 
 /**
@@ -30,20 +29,5 @@ export class Inventory implements InventoryData {
     public stock: number,
     public created_at: Date,
     public updated_at: Date,
-    public variants: Variant[],
-  ) {}
-}
-
-export interface VariantData {
-  name: string;
-  price: number;
-  stock: number;
-}
-
-export class Variant implements VariantData {
-  constructor(
-    public name: string,
-    public price: number,
-    public stock: number,
   ) {}
 }

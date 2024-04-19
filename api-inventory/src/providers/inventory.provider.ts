@@ -1,13 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseProvider } from 'src/databases/db_connection';
 import { Inventory, InventoryData } from 'src/entities/inventory.entitie';
-import * as Joi from 'joi';
-import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class InventoryProvider {
   constructor(private readonly databaseProvider: DatabaseProvider) {}
 
+  /**
+   * Adds an item to the inventory.
+   * @param storeId - The ID of the store.
+   * @param itemData - The data of the item to be added.
+   * @returns A promise that resolves to an object containing the status, success, and optional message.
+   */
   async addItem(
     storeId: string,
     itemData: Inventory,
@@ -32,6 +36,11 @@ export class InventoryProvider {
     return { status: 201, success: true, message: 'Item added successfully' };
   }
 
+  /**
+   * Retrieves the inventory of a store.
+   * @param storeId - The ID of the store.
+   * @returns A promise that resolves to an object containing the status, success, message, and inventory data.
+   */
   async getInventory(storeId: string): Promise<{
     status: number;
     success: boolean;
@@ -49,6 +58,12 @@ export class InventoryProvider {
     };
   }
 
+  /**
+   * Retrieves an item from the inventory by barcode.
+   * @param storeId - The ID of the store.
+   * @param barcode - The barcode of the item.
+   * @returns A promise that resolves to an object containing the status, success, message, and item data.
+   */
   async getItemByBarcode(
     storeId: string,
     barcode: string,
@@ -59,8 +74,8 @@ export class InventoryProvider {
     item?: InventoryData;
   }> {
     const db = this.databaseProvider.getDb();
-    const productsCollection = db.collection(`inventory_store_${storeId}`);
-    const item = await productsCollection.findOne({
+    const invetnoryCollection = db.collection(`inventory_store_${storeId}`);
+    const item = await invetnoryCollection.findOne({
       barcode: barcode,
     });
     if (!item) {
@@ -78,6 +93,11 @@ export class InventoryProvider {
     };
   }
 
+  /**
+   * Validates the store ID.
+   * @param storeId - The ID of the store.
+   * @returns An object containing the status, success, and optional message.
+   */
   validateStore(storeId: string): {
     status?: number;
     success: boolean;
@@ -93,6 +113,11 @@ export class InventoryProvider {
     return { success: true };
   }
 
+  /**
+   * Validates the item data.
+   * @param itemData - The data of the item.
+   * @returns An object containing the status, success, and optional message.
+   */
   validateItemData(itemData: InventoryData): {
     status?: number;
     success: boolean;
@@ -133,27 +158,14 @@ export class InventoryProvider {
       };
     }
 
-    if (Array.isArray(itemData.variants)) {
-      for (let variant of itemData.variants) {
-        if (typeof variant.name !== 'string') {
-          return {
-            status: 400,
-            success: false,
-            message: "'variant.name' must be a string",
-          };
-        }
-      }
-    } else {
-      return {
-        status: 400,
-        success: false,
-        message: "'variants' must be an array",
-      };
-    }
-
     return { success: true };
   }
 
+  /**
+   * Instantiates an item object from the item data.
+   * @param ItemData - The data of the item.
+   * @returns An instance of the Inventory class.
+   */
   instantiateItem(ItemData: InventoryData): Inventory {
     const item = new Inventory(
       ItemData.barcode,
@@ -162,7 +174,6 @@ export class InventoryProvider {
       ItemData.stock,
       new Date(),
       new Date(),
-      ItemData.variants,
     );
 
     return item;

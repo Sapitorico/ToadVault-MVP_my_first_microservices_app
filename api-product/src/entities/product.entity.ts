@@ -6,7 +6,6 @@ export interface ProductData {
   name: string;
   created_at: Date;
   updated_at: Date;
-  variants: Variant[];
 }
 
 /**
@@ -24,14 +23,5 @@ export class Product implements ProductData {
     public name: string,
     public created_at: Date,
     public updated_at: Date,
-    public variants: Variant[],
   ) {}
-}
-
-export interface VariantData {
-  name: string;
-}
-
-export class Variant implements VariantData {
-  constructor(public name: string) {}
 }
