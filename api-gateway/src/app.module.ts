@@ -3,8 +3,7 @@ import { InventoryModule } from './modules/inventory.gateway.module';
 import { ProductModule } from './modules/products.gateway.module';
 import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './modules/users.gateway.module';
-import { APP_GUARD } from '@nestjs/core';
-import { AuthGuard } from 'src/guards/auth.gateway.provider';
+import { AuthModule } from './modules/auth.gateway.module';
 
 @Module({
   imports: [
@@ -12,13 +11,9 @@ import { AuthGuard } from 'src/guards/auth.gateway.provider';
     InventoryModule,
     ProductModule,
     UsersModule,
+    AuthModule,
   ],
   controllers: [],
-  providers: [
-    {
-      provide: APP_GUARD,
-      useClass: AuthGuard,
-    },
-  ],
+  providers: [],
 })
 export class AppModule {}

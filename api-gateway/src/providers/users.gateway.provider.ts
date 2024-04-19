@@ -20,10 +20,4 @@ export class UsersProvider {
     return response;
   }
 
-  async verifyToken(token: string) {
-    const response = await this.usersClient
-      .send('verify_toen', token)
-      .toPromise();
-    return response;
-  }
 }

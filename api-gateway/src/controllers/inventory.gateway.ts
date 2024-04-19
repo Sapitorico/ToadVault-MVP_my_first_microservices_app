@@ -5,6 +5,7 @@ import {
   Param,
   Post,
   Put,
+  Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -69,7 +70,12 @@ export class InventoryController {
    * @returns The response with success status, message, and inventory items.
    */
   @Get(':storeId')
-  async getInventory(@Param('storeId') storeId: string, @Res() res: Response) {
+  async getInventory(
+    @Req() request,
+    @Param('storeId') storeId: string,
+    @Res() res: Response,
+  ) {
+    console.log(request.userId);
     const response = await this.inventoryProvider.getInventory(storeId);
     return res.status(response.status as number).json({
       success: response.success,

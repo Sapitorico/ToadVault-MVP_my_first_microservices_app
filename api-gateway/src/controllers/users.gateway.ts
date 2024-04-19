@@ -14,7 +14,6 @@ export class UsersController {
     return res.status(response.status as number).json({
       success: response.success,
       message: response.message,
-      user: response.user,
     });
   }
 
