@@ -29,13 +29,10 @@ export class InventoryProvider {
     });
     if (!item) {
       await inventoryCollection.insertOne(itemInstance);
+      return { status: 201, success: true, message: 'Item added successfully' };
     } else {
-      await inventoryCollection.updateOne(
-        { barcode: itemData.barcode },
-        { $inc: { stock: itemData.stock } },
-      );
+      return { status: 409, success: false, message: 'Item already exists' };
     }
-    return { status: 201, success: true, message: 'Item added successfully' };
   }
 
   /**
@@ -103,7 +100,7 @@ export class InventoryProvider {
    * @param itemData - The data of the item.
    * @returns An object containing the status, success, and optional message.
    */
-  validateItemData(itemData: InventoryData): {
+  validateNewItemData(itemData: InventoryData): {
     status?: number;
     success: boolean;
     message?: string;
@@ -124,22 +121,6 @@ export class InventoryProvider {
         status: 400,
         success: false,
         message: "'name' must be a string",
-      };
-    }
-
-    if (typeof itemData.price !== 'number') {
-      return {
-        status: 400,
-        success: false,
-        message: "'price' must be a number",
-      };
-    }
-
-    if (typeof itemData.stock !== 'number') {
-      return {
-        status: 400,
-        success: false,
-        message: "'stock' must be a number",
       };
     }
 

@@ -18,7 +18,7 @@ export class InventoryController {
   @EventPattern('add_new_item')
   async addItemToInventory(data: { user_id: string; itemData: InventoryData }) {
     const { user_id, itemData } = data;
-    const validate = this.inventoryProvider.validateItemData(itemData);
+    const validate = this.inventoryProvider.validateNewItemData(itemData);
     if (!validate.success) {
       return validate;
     }

@@ -1,8 +1,9 @@
 export interface InventoryData {
+  _id?: string;
   barcode: string;
   name: string;
-  price: number;
-  stock: number;
+  price?: number;
+  stock?: number;
   created_at: Date;
   updated_at: Date;
 }

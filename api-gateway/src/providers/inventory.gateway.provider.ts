@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { Inventory, InventoryData } from 'src/entities/inventory.entitie';
+import { productData } from 'src/models/product.model';
 
 @Injectable()
 export class InventoryProvider {
@@ -8,11 +9,10 @@ export class InventoryProvider {
     @Inject('inventory-microservice') private inventoryClient: ClientProxy,
   ) {}
 
-  async addItem(userId: string, itemData: any, productData: any) {
-    const newItem = this.instantiateItem(itemData, productData);
+  async addItem(userId: string, productData: productData) {
     const data = {
       user_id: userId,
-      itemData: newItem,
+      itemData: productData,
     };
     const response = await this.inventoryClient
       .send('add_new_item', data)
@@ -46,49 +46,6 @@ export class InventoryProvider {
         message: "'barcode' must be a string of numbers",
       };
     }
-    return { success: true };
-  }
-
-  validateItemData(itemData: any): {
-    status?: number;
-    success: boolean;
-    message?: string;
-  } {
-    if (
-      typeof itemData.barcode !== 'string' ||
-      !/^\d+$/.test(itemData.barcode)
-    ) {
-      return {
-        status: 400,
-        success: false,
-        message: "'barcode' must be a string of numbers",
-      };
-    }
-
-    if (typeof itemData.name !== 'string') {
-      return {
-        status: 400,
-        success: false,
-        message: "'name' must be a string",
-      };
-    }
-
-    if (typeof itemData.price !== 'number') {
-      return {
-        status: 400,
-        success: false,
-        message: "'price' must be a number",
-      };
-    }
-
-    if (typeof itemData.stock !== 'number') {
-      return {
-        status: 400,
-        success: false,
-        message: "'stock' must be a number",
-      };
-    }
-
     return { success: true };
   }
 

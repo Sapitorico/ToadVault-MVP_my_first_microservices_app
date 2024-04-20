@@ -16,8 +16,9 @@ export class ProductProvider {
     status: number;
     success: boolean;
     message?: string;
-    product?: productData;
+    product: productData;
   }> {
+    const productInstance = this.instantiateProduct(productData);
     const db = this.databaseProvider.getDb();
     const productsCollection = db.collection('products');
     const product = await productsCollection.findOne({
@@ -25,12 +26,13 @@ export class ProductProvider {
     });
     if (product) {
       return {
-        status: 409,
-        success: false,
+        status: 200,
+        success: true,
         message: 'The product with this barcode already exists in the database',
+        product: product as productData,
       };
     }
-    const insertResult = await productsCollection.insertOne(productData);
+    const insertResult = await productsCollection.insertOne(productInstance);
     const newProduct = await productsCollection.findOne({
       _id: insertResult.insertedId,
     });

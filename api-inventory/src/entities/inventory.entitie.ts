@@ -4,8 +4,8 @@ export interface InventoryData {
   _id?: ObjectId;
   barcode: string;
   name: string;
-  price: number;
-  stock: number;
+  price?: number;
+  stock?: number;
   created_at?: Date;
   updated_at?: Date;
 }
@@ -24,8 +24,8 @@ export class Inventory implements InventoryData {
   constructor(
     public barcode: string,
     public name: string,
-    public price: number,
-    public stock: number,
+    public price: number = 0,
+    public stock: number = 0,
     public created_at: Date,
     public updated_at: Date,
   ) {}

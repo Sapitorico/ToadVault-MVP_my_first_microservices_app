@@ -19,8 +19,7 @@ export class ProductController {
     if (!validation.success) {
       return validation;
     }
-    const product = this.productProvider.instantiateProduct(productData);
-    const response = await this.productProvider.addProduct(product);
+    const response = await this.productProvider.addProduct(productData);
     return response;
   }
 

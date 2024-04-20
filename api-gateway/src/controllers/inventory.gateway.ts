@@ -9,11 +9,11 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { ProductData } from 'src/entities/product.entity';
 import { Response } from 'express';
 import { InventoryProvider } from 'src/providers/inventory.gateway.provider';
 import { ProductProvider } from 'src/providers/product.gateway.provider';
 import { AuthGuard } from 'src/guards/auth.gateway.provider';
+import { productData } from 'src/models/product.model';
 
 /**
  * Controller for managing inventory-related operations.
@@ -36,16 +36,10 @@ export class InventoryController {
   @Post('new')
   async addItem(
     @Req() request,
-    @Body() itemData: ProductData,
+    @Body() itemData: productData,
     @Res() res: Response,
   ) {
     const userId = request.userId;
-    const validate = this.inventoryProvider.validateItemData(itemData);
-    if (!validate.success) {
-      return res
-        .status(validate.status as number)
-        .json({ success: validate.success, message: validate.message });
-    }
     const productResponse = await this.productProvider.addNewProduct(itemData);
     if (!productResponse.success) {
       return res.status(productResponse.status as number).json({
@@ -55,7 +49,6 @@ export class InventoryController {
     }
     const response = await this.inventoryProvider.addItem(
       userId,
-      itemData,
       productResponse.product,
     );
     return res.status(response.status as number).json({
