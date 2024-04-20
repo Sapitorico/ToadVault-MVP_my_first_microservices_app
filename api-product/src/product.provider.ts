@@ -156,6 +156,7 @@ export class ProductProvider {
    * @returns An object containing the success status and an optional message.
    */
   validateProductData(productData: productData): {
+    status?: number;
     success: boolean;
     message?: string;
   } {
@@ -164,13 +165,18 @@ export class ProductProvider {
       !/^\d+$/.test(productData.barcode)
     ) {
       return {
+        status: 400,
         success: false,
         message: "'barcode' must be a string of numbers",
       };
     }
 
     if (typeof productData.name !== 'string') {
-      return { success: false, message: "'name' must be a string" };
+      return {
+        status: 400,
+        success: false,
+        message: "'name' must be a string",
+      };
     }
 
     return { success: true };
