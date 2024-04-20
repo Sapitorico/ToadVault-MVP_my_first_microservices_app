@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 
-export interface InventoryData {
+export interface inventoryData {
   _id?: ObjectId;
   barcode: string;
   name: string;
@@ -20,7 +20,7 @@ export interface InventoryData {
  * @param created_at - The date and time when the item was created.
  * @param updated_at - The date and time when the item was last updated.
  */
-export class Inventory implements InventoryData {
+export class Inventory implements inventoryData {
   constructor(
     public barcode: string,
     public name: string,

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseProvider } from 'src/databases/db_connection';
-import { Inventory, InventoryData } from 'src/entities/inventory.entitie';
+import { Inventory, inventoryData } from 'src/entities/inventory.entitie';
 
 @Injectable()
 export class InventoryProvider {
@@ -15,7 +15,7 @@ export class InventoryProvider {
    */
   async addItem(
     user_id: string,
-    itemData: InventoryData,
+    itemData: inventoryData,
   ): Promise<{
     status: number;
     success: boolean;
@@ -30,9 +30,40 @@ export class InventoryProvider {
     if (!item) {
       await inventoryCollection.insertOne(itemInstance);
       return { status: 201, success: true, message: 'Item added successfully' };
-    } else {
-      return { status: 409, success: false, message: 'Item already exists' };
     }
+    return { status: 409, success: false, message: 'Item already exists' };
+  }
+
+  /**
+   * Updates an item in the inventory.
+   * @param user_id - The ID of the user.
+   * @param itemData - The updated item data.
+   * @returns A promise that resolves to an object containing the status, success, and message (if any).
+   */
+  async updateItem(
+    user_id: string,
+    barcode: string,
+    itemData: inventoryData,
+  ): Promise<{
+    status: number;
+    success: boolean;
+    message?: string;
+  }> {
+    const db = this.databaseProvider.getDb();
+    const inventoryCollection = db.collection(`inventory_user_${user_id}`);
+    const item = await inventoryCollection.findOne({
+      barcode: barcode,
+    });
+    if (!item) {
+      return { status: 404, success: false, message: 'Item not found' };
+    }
+    itemData.updated_at = new Date();
+    await inventoryCollection.updateOne({ _id: item._id }, { $set: itemData });
+    return {
+      status: 200,
+      success: false,
+      message: 'Item updated successfully',
+    };
   }
 
   /**
@@ -45,7 +76,7 @@ export class InventoryProvider {
     status: number;
     success: boolean;
     message: string;
-    inventory: InventoryData[];
+    inventory: inventoryData[];
   }> {
     const db = this.databaseProvider.getDb();
     const inventoryCollection = db.collection(`inventory_user_${user_id}`);
@@ -54,7 +85,7 @@ export class InventoryProvider {
       status: 200,
       success: true,
       message: 'Items retrieved successfully',
-      inventory: inventory as InventoryData[],
+      inventory: inventory as inventoryData[],
     };
   }
 
@@ -72,7 +103,7 @@ export class InventoryProvider {
     status: number;
     success: boolean;
     message: string;
-    item?: InventoryData;
+    item?: inventoryData;
   }> {
     const db = this.databaseProvider.getDb();
     const invetnoryCollection = db.collection(`inventory_user_${user_id}`);
@@ -90,7 +121,7 @@ export class InventoryProvider {
       status: 200,
       success: true,
       message: 'Item retrieved successfully',
-      item: { ...item } as InventoryData,
+      item: item as inventoryData,
     };
   }
 
@@ -100,7 +131,7 @@ export class InventoryProvider {
    * @param itemData - The data of the item.
    * @returns An object containing the status, success, and optional message.
    */
-  validateNewItemData(itemData: InventoryData): {
+  validateNewItemData(itemData: inventoryData): {
     status?: number;
     success: boolean;
     message?: string;
@@ -128,12 +159,49 @@ export class InventoryProvider {
   }
 
   /**
+   * Validates the update item data.
+   *
+   * @param itemData - The item data to be validated.
+   * @returns An object containing the validation result.
+   */
+  validateUpdateItemData(itemData: inventoryData): {
+    status?: number;
+    success: boolean;
+    message?: string;
+  } {
+    if (typeof itemData.name !== 'string') {
+      return {
+        status: 400,
+        success: false,
+        message: "'name' must be a string",
+      };
+    }
+
+    if (typeof itemData.price !== 'number') {
+      return {
+        status: 400,
+        success: false,
+        message: "'price' must be a number",
+      };
+    }
+    if (typeof itemData.stock !== 'number') {
+      return {
+        status: 400,
+        success: false,
+        message: "'stock' must be a number",
+      };
+    }
+
+    return { success: true };
+  }
+
+  /**
    * Instantiates an item object from the item data.
    *
    * @param ItemData - The data of the item.
    * @returns An instance of the Inventory class.
    */
-  instantiateItem(ItemData: InventoryData): Inventory {
+  instantiateItem(ItemData: inventoryData): Inventory {
     const item = new Inventory(
       ItemData.barcode,
       ItemData.name,

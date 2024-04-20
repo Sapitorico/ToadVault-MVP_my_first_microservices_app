@@ -1,6 +1,6 @@
 import { Controller } from '@nestjs/common';
 import { EventPattern } from '@nestjs/microservices';
-import { InventoryData } from 'src/entities/inventory.entitie';
+import { inventoryData } from 'src/entities/inventory.entitie';
 import { InventoryProvider } from 'src/inventory.provider';
 
 /**
@@ -16,7 +16,7 @@ export class InventoryController {
    * @returns The response from adding the item to the inventory.
    */
   @EventPattern('add_new_item')
-  async addItemToInventory(data: { user_id: string; itemData: InventoryData }) {
+  async addItemToInventory(data: { user_id: string; itemData: inventoryData }) {
     const { user_id, itemData } = data;
     const validate = this.inventoryProvider.validateNewItemData(itemData);
     if (!validate.success) {
@@ -34,6 +34,31 @@ export class InventoryController {
   @EventPattern('get_inventory')
   async getInventory(user_id: string) {
     const response = await this.inventoryProvider.getInventory(user_id);
+    return response;
+  }
+
+  /**
+   * Handles the update of an item in the inventory.
+   *
+   * @param data - The data containing the user ID and item data.
+   * @returns A Promise that resolves to the response of the update operation.
+   */
+  @EventPattern('update_itme')
+  async handleUpdateItem(data: {
+    user_id: string;
+    barcode: string;
+    itemData: inventoryData;
+  }) {
+    const { user_id, barcode, itemData } = data;
+    const validate = this.inventoryProvider.validateUpdateItemData(itemData);
+    if (!validate.success) {
+      return validate;
+    }
+    const response = await this.inventoryProvider.updateItem(
+      user_id,
+      barcode,
+      itemData,
+    );
     return response;
   }
 

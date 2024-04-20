@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
+import { inventoryData } from 'src/models/inventory.model';
 import { productData } from 'src/models/product.model';
 
 @Injectable()
@@ -21,6 +22,26 @@ export class InventoryProvider {
     };
     const response = await this.inventoryClient
       .send('add_new_item', data)
+      .toPromise();
+    return response;
+  }
+
+  /**
+   * Updates an item in the inventory.
+   *
+   * @param {string} userId - The ID of the user performing the update.
+   * @param {string} barcode - The barcode of the item to update.
+   * @param {inventoryData} itemData - The updated data for the item.
+   * @returns {Promise<any>} - A promise that resolves to the response from the inventory client.
+   */
+  async updateItem(userId: string, barcode: string, itemData: inventoryData) {
+    const data = {
+      user_id: userId,
+      barcode: barcode,
+      itemData: itemData,
+    };
+    const response = await this.inventoryClient
+      .send('update_itme', data)
       .toPromise();
     return response;
   }

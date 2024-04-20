@@ -14,6 +14,7 @@ import { InventoryProvider } from 'src/providers/inventory.gateway.provider';
 import { ProductProvider } from 'src/providers/product.gateway.provider';
 import { AuthGuard } from 'src/guards/auth.gateway.provider';
 import { productData } from 'src/models/product.model';
+import { inventoryData } from 'src/models/inventory.model';
 
 /**
  * Controller for managing inventory-related operations.
@@ -50,6 +51,34 @@ export class InventoryController {
     const response = await this.inventoryProvider.addItem(
       userId,
       productResponse.product,
+    );
+    return res.status(response.status as number).json({
+      success: response.success,
+      message: response.message,
+    });
+  }
+
+  /**
+   * Updates an item in the inventory.
+   *
+   * @param request - The request object.
+   * @param barcode - The barcode of the item to update.
+   * @param itemData - The updated item data.
+   * @param res - The response object.
+   * @returns The updated item details.
+   */
+  @Post('update/:barcode')
+  async updateItem(
+    @Req() request,
+    @Param('barcode') barcode: string,
+    @Body() itemData: inventoryData,
+    @Res() res: Response,
+  ) {
+    const userId = request.userId;
+    const response = await this.inventoryProvider.updateItem(
+      userId,
+      barcode,
+      itemData,
     );
     return res.status(response.status as number).json({
       success: response.success,
