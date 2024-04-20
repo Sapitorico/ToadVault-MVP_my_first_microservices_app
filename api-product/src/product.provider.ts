@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseProvider } from 'src/databases/db_connection';
-import { Product, ProductData } from 'src/entities/product.entity';
+import { Product, productData } from 'src/entities/product.entity';
 import { ObjectId } from 'mongodb';
 
 @Injectable()
@@ -16,7 +16,7 @@ export class ProductProvider {
     status: number;
     success: boolean;
     message?: string;
-    product?: ProductData;
+    product?: productData;
   }> {
     const db = this.databaseProvider.getDb();
     const productsCollection = db.collection('products');
@@ -28,7 +28,6 @@ export class ProductProvider {
         status: 409,
         success: false,
         message: 'The product with this barcode already exists in the database',
-        product: {} as ProductData,
       };
     }
     const insertResult = await productsCollection.insertOne(productData);
@@ -39,7 +38,7 @@ export class ProductProvider {
       status: 201,
       success: true,
       message: 'Product added successfully',
-      product: newProduct as ProductData,
+      product: newProduct as productData,
     };
   }
 
@@ -51,7 +50,7 @@ export class ProductProvider {
     status: number;
     success: boolean;
     message: string;
-    products: ProductData[];
+    products: productData[];
   }> {
     const db = this.databaseProvider.getDb();
     const productsCollection = db.collection('products');
@@ -60,7 +59,7 @@ export class ProductProvider {
       status: 200,
       success: true,
       message: 'Products retrieved successfully',
-      products: products as ProductData[],
+      products: products as productData[],
     };
   }
 
@@ -117,7 +116,7 @@ export class ProductProvider {
     status: number;
     success: boolean;
     message: string;
-    product?: ProductData;
+    product?: productData;
   }> {
     const db = this.databaseProvider.getDb();
     const productsCollection = db.collection('products');
@@ -135,7 +134,7 @@ export class ProductProvider {
       status: 200,
       success: true,
       message: 'Product retrieved successfully',
-      product: { ...product } as ProductData,
+      product: { ...product } as productData,
     };
   }
 
@@ -156,7 +155,7 @@ export class ProductProvider {
    * @param productData - The data of the product to be validated.
    * @returns An object containing the success status and an optional message.
    */
-  validateProductData(productData: ProductData): {
+  validateProductData(productData: productData): {
     success: boolean;
     message?: string;
   } {
@@ -182,7 +181,7 @@ export class ProductProvider {
    * @param productData - The data of the product to be instantiated.
    * @returns The instantiated Product object.
    */
-  instantiateProduct(productData: ProductData): Product {
+  instantiateProduct(productData: productData): Product {
     const product = new Product(
       productData.barcode,
       productData.name,
