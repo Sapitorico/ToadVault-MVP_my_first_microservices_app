@@ -1,9 +1,8 @@
 import { Controller, Get, Res, Post, Body, Put, Param } from '@nestjs/common';
 import { EventPattern } from '@nestjs/microservices';
 import { Response } from 'express';
-import { Product } from 'src/entities/product.entity';
-import { ProductProvider } from 'src/providers/product.provider';
-
+import { ProductProvider } from 'src/product.provider';
+import { productData } from './entities/product.entity';
 
 @Controller('products')
 export class ProductController {
@@ -15,7 +14,7 @@ export class ProductController {
    * @returns The response from adding the product.
    */
   @EventPattern('add_new_product')
-  async createProduct(productData: Product) {
+  async createProduct(productData: productData) {
     const validation = this.productProvider.validateProductData(productData);
     if (!validation.success) {
       return validation;

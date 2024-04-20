@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 
-export interface ProductData {
+export interface productData {
   _id?: ObjectId;
   barcode: string;
   name: string;
@@ -15,9 +15,8 @@ export interface ProductData {
  * @property {string} name - The name of the product.
  * @property {Date} created_at - The creation date of the product.
  * @property {Date} updated_at - The last update date of the product.
- * @property {Variant[]} variants - The variants of the product.
  */
-export class Product implements ProductData {
+export class Product implements productData {
   constructor(
     public barcode: string,
     public name: string,
