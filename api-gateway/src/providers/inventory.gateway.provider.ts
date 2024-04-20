@@ -8,10 +8,10 @@ export class InventoryProvider {
     @Inject('inventory-microservice') private inventoryClient: ClientProxy,
   ) {}
 
-  async addItem(storeId: string, itemData: any, productData: any) {
+  async addItem(userId: string, itemData: any, productData: any) {
     const newItem = this.instantiateItem(itemData, productData);
     const data = {
-      storeId: storeId,
+      user_id: userId,
       itemData: newItem,
     };
     const response = await this.inventoryClient
@@ -20,10 +20,8 @@ export class InventoryProvider {
     return response;
   }
 
-  async getInventory(storeId: string) {
-    return await this.inventoryClient
-      .send('get_inventory', storeId)
-      .toPromise();
+  async getInventory(userId: string) {
+    return await this.inventoryClient.send('get_inventory', userId).toPromise();
   }
 
   async getItemBybarcode(storeId: string, barcode: string) {

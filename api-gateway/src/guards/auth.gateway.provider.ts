@@ -14,8 +14,5 @@ export class AuthGuard implements CanActivate {
     const userId = this.authProvider.verifySession(request);
     request.userId = userId;
     return true;
-    // return new Promise((resolve, reject) => {
-    //   resolve({ userValid: true, userId: userId });
-    // });
   }
 }

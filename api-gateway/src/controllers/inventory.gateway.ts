@@ -33,12 +33,13 @@ export class InventoryController {
    * @param res - The response object.
    * @returns The response with success status, message, and added item details.
    */
-  @Post('new/:storeId')
+  @Post('new')
   async addItem(
-    @Param('storeId') storeId: string,
+    @Req() request,
     @Body() itemData: ProductData,
     @Res() res: Response,
   ) {
+    const userId = request.userId;
     const validate = this.inventoryProvider.validateItemData(itemData);
     if (!validate.success) {
       return res
@@ -53,7 +54,7 @@ export class InventoryController {
       });
     }
     const response = await this.inventoryProvider.addItem(
-      storeId,
+      userId,
       itemData,
       productResponse.product,
     );
@@ -63,20 +64,10 @@ export class InventoryController {
     });
   }
 
-  /**
-   * Get the inventory of a store.
-   * @param storeId - The ID of the store.
-   * @param res - The response object.
-   * @returns The response with success status, message, and inventory items.
-   */
-  @Get(':storeId')
-  async getInventory(
-    @Req() request,
-    @Param('storeId') storeId: string,
-    @Res() res: Response,
-  ) {
-    console.log(request.userId);
-    const response = await this.inventoryProvider.getInventory(storeId);
+  @Get()
+  async getInventory(@Req() request, @Res() res: Response) {
+    const userId = request.userId;
+    const response = await this.inventoryProvider.getInventory(userId);
     return res.status(response.status as number).json({
       success: response.success,
       message: response.message,
