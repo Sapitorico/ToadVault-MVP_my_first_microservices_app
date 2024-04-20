@@ -4,6 +4,7 @@ import { ProductModule } from './modules/products.gateway.module';
 import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './modules/users.gateway.module';
 import { AuthModule } from './modules/auth.gateway.module';
+import { OrderModule } from './modules/order.gateway.module';
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import { AuthModule } from './modules/auth.gateway.module';
     InventoryModule,
     ProductModule,
     UsersModule,
+    OrderModule,
     AuthModule,
   ],
   controllers: [],
