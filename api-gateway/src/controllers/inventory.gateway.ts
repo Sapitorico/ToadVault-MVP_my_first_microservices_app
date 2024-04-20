@@ -28,10 +28,10 @@ export class InventoryController {
 
   /**
    * Add a new item to the inventory.
-   * @param storeId - The ID of the store.
+   * @param request - The request object.
    * @param itemData - The data of the item to be added.
    * @param res - The response object.
-   * @returns The response with success status, message, and added item details.
+   * @returns The response with success status, message, and item details.
    */
   @Post('new')
   async addItem(
@@ -57,6 +57,12 @@ export class InventoryController {
     });
   }
 
+  /**
+   * Get the inventory for the user.
+   * @param request - The request object.
+   * @param res - The response object.
+   * @returns The response with success status, message, and inventory items.
+   */
   @Get()
   async getInventory(@Req() request, @Res() res: Response) {
     const userId = request.userId;
@@ -70,19 +76,20 @@ export class InventoryController {
 
   /**
    * Get an item from the inventory by barcode.
-   * @param storeId - The ID of the store.
+   * @param request - The request object.
    * @param barcode - The barcode of the item.
    * @param res - The response object.
    * @returns The response with success status, message, and item details.
    */
-  @Get('item/:storeId/:barcode')
+  @Get('item/:barcode')
   async getItemBybarcode(
-    @Param('storeId') storeId: string,
+    @Req() request,
     @Param('barcode') barcode: string,
     @Res() res: Response,
   ) {
+    const userId = request.userId;
     const response = await this.inventoryProvider.getItemBybarcode(
-      storeId,
+      userId,
       barcode,
     );
     return res.status(response.status as number).json({

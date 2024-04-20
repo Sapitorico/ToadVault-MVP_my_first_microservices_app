@@ -1,6 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { Inventory, InventoryData } from 'src/entities/inventory.entitie';
 import { productData } from 'src/models/product.model';
 
 @Injectable()
@@ -9,6 +8,12 @@ export class InventoryProvider {
     @Inject('inventory-microservice') private inventoryClient: ClientProxy,
   ) {}
 
+  /**
+   * Adds a new item to the inventory.
+   * @param userId - The ID of the user.
+   * @param productData - The data of the product to be added.
+   * @returns A Promise that resolves to the response from the inventory microservice.
+   */
   async addItem(userId: string, productData: productData) {
     const data = {
       user_id: userId,
@@ -20,45 +25,28 @@ export class InventoryProvider {
     return response;
   }
 
+  /**
+   * Retrieves the inventory for a specific user.
+   * @param userId - The ID of the user.
+   * @returns A Promise that resolves to the inventory data.
+   */
   async getInventory(userId: string) {
     return await this.inventoryClient.send('get_inventory', userId).toPromise();
   }
 
-  async getItemBybarcode(storeId: string, barcode: string) {
+  /**
+   * Retrieves an item from the inventory based on its barcode.
+   * @param userId - The ID of the user.
+   * @param barcode - The barcode of the item.
+   * @returns A Promise that resolves to the item data.
+   */
+  async getItemBybarcode(userId: string, barcode: string) {
     const data = {
-      storeId: storeId,
+      user_id: userId,
       barcode: barcode,
     };
     return await this.inventoryClient
       .send('get_item_by_barcode', data)
       .toPromise();
-  }
-
-  validateBarcode(barcode: string): {
-    status?: number;
-    success: boolean;
-    message?: string;
-  } {
-    if (typeof barcode !== 'string' || !/^\d+$/.test(barcode)) {
-      return {
-        status: 400,
-        success: false,
-        message: "'barcode' must be a string of numbers",
-      };
-    }
-    return { success: true };
-  }
-
-  instantiateItem(itemData: any, prodcutData: InventoryData): Inventory {
-    const item = new Inventory(
-      prodcutData.barcode,
-      prodcutData.name,
-      itemData.price,
-      itemData.stock,
-      new Date(),
-      new Date(),
-    );
-
-    return item;
   }
 }
