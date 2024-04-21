@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -52,6 +53,31 @@ export class OrderController {
       success: response.success,
       message: response.message,
       order: response.order,
+    });
+  }
+
+  @Get('remove/:barcode')
+  async removeItem(
+    @Req() request,
+    @Param('barcode') barcode: string,
+    @Res() res: Response,
+  ) {
+    const userId = request.userId;
+    const response = await this.orderProvider.removeItem(userId, barcode);
+    return res.status(response.status as number).json({
+      success: response.success,
+      message: response.message,
+      order: response.order,
+    });
+  }
+
+  @Delete()
+  async cancelOrder(@Req() request, @Res() res: Response) {
+    const userId = request.userId;
+    const response = await this.orderProvider.cancelOrder(userId);
+    return res.status(response.status as number).json({
+      success: response.success,
+      message: response.message,
     });
   }
 }

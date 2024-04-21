@@ -18,4 +18,16 @@ export class OrderProvider {
   async getOrderByUserId(userId: string) {
     return await this.orderClient.send('get_order', userId).toPromise();
   }
+
+  async removeItem(userId: string, barcode: string) {
+    const data = {
+      user_id: userId,
+      barcode: barcode,
+    };
+    return await this.orderClient.send('remove_item', data).toPromise();
+  }
+
+  async cancelOrder(userId: string) {
+    return await this.orderClient.send('cancel_order', userId).toPromise();
+  }
 }
