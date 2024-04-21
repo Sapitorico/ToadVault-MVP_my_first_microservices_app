@@ -13,4 +13,10 @@ export class OrdersController {
     const response = await this.ordersService.createOrder(user_id, itemData);
     return response;
   }
+
+  @EventPattern('get_order')
+  async handleGetOrder(user_id: string) {
+    const response = await this.ordersService.getOrder(user_id);
+    return response;
+  }
 }
