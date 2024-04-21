@@ -43,7 +43,9 @@ export class OrdersService {
     } else {
       // Si el producto está en la orden, incrementa la cantidad
       existingOrder.items[itemIndex].quantity += 1;
-      existingOrder.items[itemIndex].totalPrice = existingOrder.items[itemIndex].unitPrice * existingOrder.items[itemIndex].quantity;
+      existingOrder.items[itemIndex].totalPrice =
+        existingOrder.items[itemIndex].unitPrice *
+        existingOrder.items[itemIndex].quantity;
     }
     // Actualiza el precio total
     existingOrder.total = existingOrder.items.reduce(
@@ -58,6 +60,30 @@ export class OrdersService {
       success: true,
       message: 'Order updated successfully',
       order: updatedOrder,
+    };
+  }
+
+  async getOrder(user_id: string): Promise<{
+    status: number;
+    success: boolean;
+    message: string;
+    order?: any;
+  }> {
+    const db = this.databaseService.getDb();
+    const orderCollection = db.collection(`orders_user_${user_id}`);
+    const order = await orderCollection.findOne({});
+    if (!order) {
+      return {
+        status: 404,
+        success: false,
+        message: 'Order not found',
+      };
+    }
+    return {
+      status: 200,
+      success: true,
+      message: 'Order found',
+      order: order,
     };
   }
 

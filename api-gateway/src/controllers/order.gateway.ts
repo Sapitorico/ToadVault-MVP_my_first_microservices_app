@@ -26,7 +26,7 @@ export class OrderController {
   ) {}
 
   @Get(':barcode')
-  async getItemBybarcode(
+  async createOrder(
     @Req() request,
     @Param('barcode') barcode: string,
     @Res() res: Response,
