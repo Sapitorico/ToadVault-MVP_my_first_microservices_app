@@ -7,6 +7,13 @@ import { Payment } from './entities/payment.entities';
 export class PaymentService {
   constructor(private readonly databaseService: DatabaseService) {}
 
+  /**
+   * Handles the payment process.
+   * @param user_id - The ID of the user making the payment.
+   * @param paymentData - The payment data.
+   * @param order - The order data.
+   * @returns A promise that resolves to an object containing the payment status, success flag, message, and change amount.
+   */
   async handlePayment(
     user_id: string,
     paymentData: any,
@@ -29,6 +36,12 @@ export class PaymentService {
     };
   }
 
+  /**
+   * Validates the cash provided for the payment.
+   * @param paymentData - The payment data.
+   * @param order - The order data.
+   * @returns An object containing the validation status, success flag, and optional message.
+   */
   validateCash(
     paymentData,
     order,
@@ -52,6 +65,11 @@ export class PaymentService {
     };
   }
 
+  /**
+   * Instantiates a Payment object.
+   * @param orderData - The order data.
+   * @returns A new Payment instance.
+   */
   instantiatePayment(orderData: orderData): Payment {
     return new Payment(orderData.items, orderData.total, new Date());
   }

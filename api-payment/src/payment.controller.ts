@@ -6,7 +6,13 @@ import { orderData } from './models/order.model';
 @Controller()
 export class PaymentController {
   constructor(private readonly paymentService: PaymentService) {}
-
+  
+  /**
+    * Handles the payment event.
+    * 
+    * @param data - The payment data including user ID, payment data, and order details.
+    * @returns A Promise that resolves to the response of the payment handling process.
+    */
   @EventPattern('payment')
   async handlePayment(data: {
     user_id: string;

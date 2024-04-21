@@ -33,6 +33,29 @@ export class InventoryProvider {
     }
     return { status: 409, success: false, message: 'Item already exists' };
   }
+  
+  /**
+   * Retrieves the inventory for a specific user.
+   *
+   * @param user_id - The ID of the user.
+   * @returns A Promise that resolves to an object containing the status, success, message, and inventory data.
+   */
+  async getInventory(user_id: string): Promise<{
+    status: number;
+    success: boolean;
+    message: string;
+    inventory: inventoryData[];
+  }> {
+    const db = this.databaseProvider.getDb();
+    const inventoryCollection = db.collection(`inventory_user_${user_id}`);
+    const inventory = await inventoryCollection.find().toArray();
+    return {
+      status: 200,
+      success: true,
+      message: 'Items retrieved successfully',
+      inventory: inventory as inventoryData[],
+    };
+  }
 
   /**
    * Updates an item in the inventory.
@@ -66,28 +89,6 @@ export class InventoryProvider {
     };
   }
 
-  /**
-   * Retrieves the inventory for a specific user.
-   *
-   * @param user_id - The ID of the user.
-   * @returns A Promise that resolves to an object containing the status, success, message, and inventory data.
-   */
-  async getInventory(user_id: string): Promise<{
-    status: number;
-    success: boolean;
-    message: string;
-    inventory: inventoryData[];
-  }> {
-    const db = this.databaseProvider.getDb();
-    const inventoryCollection = db.collection(`inventory_user_${user_id}`);
-    const inventory = await inventoryCollection.find().toArray();
-    return {
-      status: 200,
-      success: true,
-      message: 'Items retrieved successfully',
-      inventory: inventory as inventoryData[],
-    };
-  }
 
   /**
    * Retrieves an item from the inventory for a specific user by barcode.
@@ -169,14 +170,6 @@ export class InventoryProvider {
     success: boolean;
     message?: string;
   } {
-    if (typeof itemData.name !== 'string') {
-      return {
-        status: 400,
-        success: false,
-        message: "'name' must be a string",
-      };
-    }
-
     if (typeof itemData.price !== 'number') {
       return {
         status: 400,

@@ -6,6 +6,12 @@ import { ItemsList, Order, itemData } from './entities/order.entity';
 export class OrdersService {
   constructor(private readonly databaseService: DatabaseService) {}
 
+  /**
+   * Creates a new order for a user with the provided item data.
+   * @param user_id - The ID of the user.
+   * @param itemData - The data of the item to be added to the order.
+   * @returns A promise that resolves to an object containing the status, success, message, and order details.
+   */
   async createOrder(
     user_id: string,
     itemData: itemData,
@@ -26,7 +32,7 @@ export class OrdersService {
       await orderCollection.insertOne(orderInstance);
       const newOrder = await orderCollection.findOne({});
       return {
-        status: 200,
+        status: 201,
         success: true,
         message: 'Order created successfully',
         order: newOrder,
@@ -63,30 +69,13 @@ export class OrdersService {
     };
   }
 
-  async getOrder(user_id: string): Promise<{
-    status: number;
-    success: boolean;
-    message: string;
-    order?: any;
-  }> {
-    const db = this.databaseService.getDb();
-    const orderCollection = db.collection(`orders_user_${user_id}`);
-    const order = await orderCollection.findOne({});
-    if (!order) {
-      return {
-        status: 404,
-        success: false,
-        message: 'Order not found',
-      };
-    }
-    return {
-      status: 200,
-      success: true,
-      message: 'Order found',
-      order: order,
-    };
-  }
-
+  /**
+   * Removes an item from the order.
+   *
+   * @param user_id - The ID of the user.
+   * @param barcode - The barcode of the item to be removed.
+   * @returns A promise that resolves to an object containing the status, success, message, and updated order (if successful).
+   */
   async removeItem(
     user_id: string,
     barcode: string,
@@ -135,6 +124,11 @@ export class OrdersService {
     };
   }
 
+  /**
+   * Cancels an order for a given user.
+   * @param user_id - The ID of the user.
+   * @returns A promise that resolves to an object containing the status, success, and message of the cancellation.
+   */
   async cancelOrder(
     user_id: string,
   ): Promise<{ status: number; success: boolean; message: string }> {
@@ -156,10 +150,51 @@ export class OrdersService {
     };
   }
 
+  /**
+   * Retrieves an order for a given user.
+   * @param user_id - The ID of the user.
+   * @returns A Promise that resolves to an object containing the order details.
+   */
+  async getOrder(user_id: string): Promise<{
+    status: number;
+    success: boolean;
+    message: string;
+    order?: any;
+  }> {
+    const db = this.databaseService.getDb();
+    const orderCollection = db.collection(`orders_user_${user_id}`);
+    const order = await orderCollection.findOne({});
+    if (!order) {
+      return {
+        status: 404,
+        success: false,
+        message: 'Order not found',
+      };
+    }
+    return {
+      status: 200,
+      success: true,
+      message: 'Order found',
+      order: order,
+    };
+  }
+
+  /**
+   * Creates a new instance of an item in the items list.
+   *
+   * @param itemData - The data of the item to be instantiated.
+   * @returns The newly instantiated item.
+   */
   instanciateItem(itemData: itemData): ItemsList {
     return new ItemsList(itemData.barcode, itemData.name, itemData.price, 1);
   }
 
+  /**
+   * Instantiates an order based on the provided item data.
+   *
+   * @param itemData - The data of the item to be included in the order.
+   * @returns The instantiated Order object.
+   */
   instantiateOrder(itemData: itemData): Order {
     let item = this.instanciateItem(itemData);
     let itemsList: ItemsList[] = [item];
