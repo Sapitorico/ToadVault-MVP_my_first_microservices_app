@@ -87,6 +87,75 @@ export class OrdersService {
     };
   }
 
+  async removeItem(
+    user_id: string,
+    barcode: string,
+  ): Promise<{
+    status: number;
+    success: boolean;
+    message: string;
+    order?: any;
+  }> {
+    const db = this.databaseService.getDb();
+    const orderCollection = db.collection(`orders_user_${user_id}`);
+    const order = await orderCollection.findOne({});
+    if (!order) {
+      return {
+        status: 404,
+        success: false,
+        message: 'Order not found',
+      };
+    }
+    const itemIndex = order.items.findIndex((item) => item.barcode === barcode);
+    if (itemIndex === -1) {
+      return {
+        status: 404,
+        success: false,
+        message: 'Item not found',
+      };
+    }
+    if (order.items[itemIndex].quantity > 1) {
+      order.items[itemIndex].quantity -= 1;
+      order.items[itemIndex].totalPrice =
+        order.items[itemIndex].unitPrice * order.items[itemIndex].quantity;
+    } else {
+      order.items.splice(itemIndex, 1);
+    }
+    order.total = order.items.reduce(
+      (total, item) => total + item.totalPrice,
+      0,
+    );
+    await orderCollection.updateOne({}, { $set: order });
+    const updatedOrder = await orderCollection.findOne({});
+    return {
+      status: 200,
+      success: true,
+      message: 'Item removed successfully',
+      order: updatedOrder,
+    };
+  }
+
+  async cancelOrder(
+    user_id: string,
+  ): Promise<{ status: number; success: boolean; message: string }> {
+    const db = this.databaseService.getDb();
+    const orderCollection = db.collection(`orders_user_${user_id}`);
+    const order = await orderCollection.findOne({});
+    if (!order) {
+      return {
+        status: 404,
+        success: false,
+        message: 'Order not found',
+      };
+    }
+    await orderCollection.deleteOne({});
+    return {
+      status: 200,
+      success: true,
+      message: 'Order cancelled successfully',
+    };
+  }
+
   instanciateItem(itemData: itemData): ItemsList {
     return new ItemsList(itemData.barcode, itemData.name, itemData.price, 1);
   }
