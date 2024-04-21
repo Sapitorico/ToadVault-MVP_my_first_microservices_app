@@ -41,6 +41,9 @@ export class PaymentController {
       paymentData,
       orderResponse.order,
     );
+    if (response.success) {
+      await this.orderProvider.cancelOrder(userId);
+    }
     return res.status(response.status as number).json({
       success: response.success,
       message: response.message,
