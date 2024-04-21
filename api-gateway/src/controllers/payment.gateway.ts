@@ -1,19 +1,19 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  Post,
-  Put,
-  Req,
-  Res,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
 import { AuthGuard } from 'src/guards/auth.gateway.provider';
 import { OrderProvider } from 'src/providers/order.gateway.provider';
 import { PaymentProvider } from 'src/providers/payment.gateway.provider';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { PaymentDto, Payment } from 'src/models/payment.model';
 
+@ApiBearerAuth()
+@ApiTags('payment')
 @Controller('payment')
 @UseGuards(AuthGuard)
 export class PaymentController {
@@ -22,10 +22,23 @@ export class PaymentController {
     private readonly paymentProvider: PaymentProvider,
   ) {}
 
-  @Get()
+  /**
+   * Retrieves an item by barcode and processes the payment.
+   * @param request - The request object.
+   * @param paymentData - The payment data.
+   * @param res - The response object.
+   * @returns The response with the payment status and any additional information.
+   */
+  @ApiOperation({ summary: 'Process payment' })
+  @ApiResponse({ status: 200, description: 'Payment processed successfully' })
+  @ApiResponse({ status: 404, description: 'Order not found' })
+  @ApiResponse({ status: 400, description: 'Invalid cash provided' })
+  @ApiResponse({ status: 400, description: 'Insufficient cash provided' })
+  @ApiBody({ type: PaymentDto, description: 'Payment data' })
+  @Post()
   async getItemBybarcode(
     @Req() request,
-    @Body() paymentData: any,
+    @Body() paymentData: Payment,
     @Res() res: Response,
   ) {
     const userId = request.userId;

@@ -1,10 +1,8 @@
 import {
-  Body,
   Controller,
   Delete,
   Get,
   Param,
-  Post,
   Put,
   Req,
   Res,
@@ -12,12 +10,17 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 import { InventoryProvider } from 'src/providers/inventory.gateway.provider';
-import { ProductProvider } from 'src/providers/product.gateway.provider';
 import { AuthGuard } from 'src/guards/auth.gateway.provider';
-import { productData } from 'src/models/product.model';
-import { inventoryData } from 'src/models/inventory.model';
 import { OrderProvider } from 'src/providers/order.gateway.provider';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
+@ApiBearerAuth()
+@ApiTags('order')
 @Controller('order')
 @UseGuards(AuthGuard)
 export class OrderController {
@@ -26,6 +29,17 @@ export class OrderController {
     private readonly orderProvider: OrderProvider,
   ) {}
 
+  /**
+   * Create an order for a given barcode.
+   * @param request - The request object.
+   * @param barcode - The barcode of the item.
+   * @param res - The response object.
+   * @returns The response with the order details.
+   */
+  @ApiOperation({ summary: 'Create order for item' })
+  @ApiResponse({ status: 201, description: 'Order created successfully' })
+  @ApiResponse({ status: 200, description: 'Order updated successfully' })
+  @ApiResponse({ status: 404, description: 'Item not found' })
   @Get(':barcode')
   async createOrder(
     @Req() request,
@@ -56,7 +70,18 @@ export class OrderController {
     });
   }
 
-  @Get('remove/:barcode')
+  /**
+   * Remove an item from the order.
+   * @param request - The request object.
+   * @param barcode - The barcode of the item to remove.
+   * @param res - The response object.
+   * @returns The response with the updated order details.
+   */
+  @ApiOperation({ summary: 'Remove item from order' })
+  @ApiResponse({ status: 200, description: 'Item removed successfully' })
+  @ApiResponse({ status: 404, description: 'Item not found' })
+  @ApiResponse({ status: 404, description: 'Order not found' })
+  @Put('remove/:barcode')
   async removeItem(
     @Req() request,
     @Param('barcode') barcode: string,
@@ -71,6 +96,15 @@ export class OrderController {
     });
   }
 
+  /**
+   * Cancel the order.
+   * @param request - The request object.
+   * @param res - The response object.
+   * @returns The response with the cancellation status.
+   */
+  @ApiOperation({ summary: 'Cancel order' })
+  @ApiResponse({ status: 200, description: 'Order cancelled successfully' })
+  @ApiResponse({ status: 404, description: 'Order not found' })
   @Delete()
   async cancelOrder(@Req() request, @Res() res: Response) {
     const userId = request.userId;
