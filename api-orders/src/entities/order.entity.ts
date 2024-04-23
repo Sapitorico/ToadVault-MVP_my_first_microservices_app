@@ -2,6 +2,7 @@ export interface itemData {
   barcode: string;
   name: string;
   price: number;
+  stock: number;
 }
 
 export class ItemsList {

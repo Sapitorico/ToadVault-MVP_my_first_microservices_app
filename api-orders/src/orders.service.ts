@@ -46,11 +46,20 @@ export class OrdersService {
       const orderInstance = this.instanciateItem(itemData);
       existingOrder.items.push(orderInstance);
     } else {
-      // Si el producto está en la orden, incrementa la cantidad
-      existingOrder.items[itemIndex].quantity += 1;
-      existingOrder.items[itemIndex].totalPrice =
-        existingOrder.items[itemIndex].unitPrice *
-        existingOrder.items[itemIndex].quantity;
+      // Si el producto está en la orden, incrementa la cantidad\
+      if (itemData.stock > existingOrder.items[itemIndex].quantity) {
+        existingOrder.items[itemIndex].quantity += 1;
+        existingOrder.items[itemIndex].totalPrice =
+          existingOrder.items[itemIndex].unitPrice *
+          existingOrder.items[itemIndex].quantity;
+      } else {
+        return {
+          status: 400,
+          success: false,
+          message: 'Insufficient stock',
+          order: existingOrder,
+        };
+      }
     }
     // Actualiza el precio total
     existingOrder.total = existingOrder.items.reduce(
