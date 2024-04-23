@@ -47,10 +47,8 @@ export class OrderController {
     @Res() res: Response,
   ) {
     const userId = request.userId;
-    const inventoryResponse = await this.inventoryProvider.getItemBybarcode(
-      userId,
-      barcode,
-    );
+    const inventoryResponse =
+      await this.inventoryProvider.getItemBybarcodeFromOrder(userId, barcode);
     if (!inventoryResponse.success) {
       return res.status(inventoryResponse.status as number).json({
         success: inventoryResponse.success,
