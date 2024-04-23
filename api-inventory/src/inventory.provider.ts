@@ -126,6 +126,28 @@ export class InventoryProvider {
   }
 
   /**
+   * Updates the inventory for a given user by subtracting the specified quantities of items.
+   * @param user_id - The ID of the user.
+   * @param items - An array of objects representing the items to be updated. Each object should have a `barcode` property (string) and a `quantity` property (number).
+   * @returns A Promise that resolves to an object with a `success` property indicating whether the update was successful.
+   */
+  async updateInventory(
+    user_id: string,
+    items: { barcode: string; quantity: number }[],
+  ): Promise<{ success?: boolean }> {
+    const db = this.databaseProvider.getDb();
+    const inventoryCollection = db.collection(`inventory_user_${user_id}`);
+    const bulkWriteOperations = items.map((item) => ({
+      updateOne: {
+        filter: { barcode: item.barcode },
+        update: { $inc: { stock: -item.quantity } },
+      },
+    }));
+    await inventoryCollection.bulkWrite(bulkWriteOperations);
+    return { success: true };
+    }
+  
+   /**
     * Retrieves an item from the inventory by barcode for a specific user.
     * @param user_id - The ID of the user.
     * @param barcode - The barcode of the item.

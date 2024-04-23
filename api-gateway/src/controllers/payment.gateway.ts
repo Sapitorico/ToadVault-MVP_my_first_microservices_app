@@ -11,6 +11,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { PaymentDto, Payment } from 'src/models/payment.model';
+import { InventoryProvider } from 'src/providers/inventory.gateway.provider';
 
 @ApiBearerAuth()
 @ApiTags('payment')
@@ -20,6 +21,7 @@ export class PaymentController {
   constructor(
     private readonly orderProvider: OrderProvider,
     private readonly paymentProvider: PaymentProvider,
+    private readonly inventoryProvider: InventoryProvider,
   ) {}
 
   /**
@@ -56,6 +58,7 @@ export class PaymentController {
     );
     if (response.success) {
       await this.orderProvider.cancelOrder(userId);
+      await this.inventoryProvider.updateInventory(userId, response.items);
     }
     return res.status(response.status as number).json({
       success: response.success,
