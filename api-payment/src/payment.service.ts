@@ -19,20 +19,26 @@ export class PaymentService {
     paymentData: any,
     order: orderData,
   ): Promise<{
-    status?: number;
-    success?: boolean;
-    message?: string;
-    change?: number;
+    status: number;
+    success: boolean;
+    message: string;
+    change: number;
+    items: { barcode: string; quantity: number }[];
   }> {
     const paymentInstance = this.instantiatePayment(order);
     const db = this.databaseService.getDb();
     const paymentCollection = db.collection(`payments_user_${user_id}`);
     await paymentCollection.insertOne(paymentInstance);
+    const items = order.items.map((item) => ({
+      barcode: item.barcode,
+      quantity: item.quantity,
+    }));
     return {
       status: 200,
       success: true,
       message: 'Payment success',
       change: paymentData.cash - order.total,
+      items: items,
     };
   }
 
