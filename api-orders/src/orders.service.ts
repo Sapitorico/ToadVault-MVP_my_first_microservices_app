@@ -21,7 +21,6 @@ export class OrdersService {
     message: string;
     order: any;
   }> {
-    console.log(itemData);
     const db = this.databaseService.getDb();
     const orderCollection = db.collection(`orders_user_${user_id}`);
     // Busca una orden existente

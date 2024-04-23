@@ -82,18 +82,4 @@ export class InventoryController {
     return response;
   }
 
-  /**
-   * Retrieves an item from the inventory based on its barcode.
-   * @param data - The data containing the user ID and barcode.
-   * @returns The item from the inventory with the specified barcode.
-   */
-  @MessagePattern('get_item_by_barcode_from_order')
-  async getItemFromOrder(@Payload() data: { user_id: string; barcode: string }) {
-    const { user_id, barcode } = data;
-    const response = await this.inventoryProvider.getItemByBarcode(
-      user_id,
-      barcode,
-    );
-    return response;
-  }
 }
