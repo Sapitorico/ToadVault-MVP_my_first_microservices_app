@@ -33,7 +33,7 @@ export class InventoryProvider {
     }
     return { status: 409, success: false, message: 'Item already exists' };
   }
-  
+
   /**
    * Retrieves the inventory for a specific user.
    *
@@ -89,7 +89,6 @@ export class InventoryProvider {
     };
   }
 
-
   /**
    * Retrieves an item from the inventory for a specific user by barcode.
    *
@@ -116,6 +115,48 @@ export class InventoryProvider {
         status: 404,
         success: false,
         message: 'Item not found',
+      };
+    }
+    return {
+      status: 200,
+      success: true,
+      message: 'Item retrieved successfully',
+      item: item as inventoryData,
+    };
+  }
+
+  /**
+    * Retrieves an item from the inventory by barcode for a specific user.
+    * @param user_id - The ID of the user.
+    * @param barcode - The barcode of the item.
+    * @returns A Promise that resolves to an object containing the status, success, message, and item (if found).
+    */
+  async getItemByBarcodeForOrder(
+    user_id: string,
+    barcode: string,
+  ): Promise<{
+    status: number;
+    success: boolean;
+    message: string;
+    item?: inventoryData;
+  }> {
+    const db = this.databaseProvider.getDb();
+    const invetnoryCollection = db.collection(`inventory_user_${user_id}`);
+    const item = await invetnoryCollection.findOne({
+      barcode: barcode,
+    });
+    if (!item) {
+      return {
+        status: 404,
+        success: false,
+        message: 'Item not found',
+      };
+    }
+    if (item.price <= 0 || item.stock <= 0) {
+      return {
+        status: 404,
+        success: false,
+        message: 'Item does not have price or stock greater than 0',
       };
     }
     return {
