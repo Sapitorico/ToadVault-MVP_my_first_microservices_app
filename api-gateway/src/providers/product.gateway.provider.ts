@@ -10,6 +10,10 @@ export class ProductProvider {
     private productClient: ClientKafka,
   ) {}
 
+  /**
+   * Initializes the module and subscribes to the 'add_new_product' response.
+   * Connects to the product client.
+   */
   async onModuleInit() {
     this.productClient.subscribeToResponseOf('add_new_product');
     await this.productClient.connect();

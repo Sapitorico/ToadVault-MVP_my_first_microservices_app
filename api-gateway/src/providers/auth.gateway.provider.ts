@@ -1,6 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
 import { Request } from 'express';
+process.loadEnvFile();
 
 @Injectable()
 export class AuthProvider {

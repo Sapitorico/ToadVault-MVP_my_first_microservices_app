@@ -11,14 +11,15 @@ export class InventoryProvider {
     private inventoryClient: ClientKafka,
   ) {}
 
+  /**
+   * Initializes the module and subscribes to response events.
+   * Connects the inventory client to the server.
+   */
   async onModuleInit() {
     this.inventoryClient.subscribeToResponseOf('add_new_item');
     this.inventoryClient.subscribeToResponseOf('update_itme');
     this.inventoryClient.subscribeToResponseOf('get_inventory');
     this.inventoryClient.subscribeToResponseOf('get_item_by_barcode');
-    this.inventoryClient.subscribeToResponseOf(
-      'get_item_by_barcode_from_order',
-    );
     await this.inventoryClient.connect();
   }
 

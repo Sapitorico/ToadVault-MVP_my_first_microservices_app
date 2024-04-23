@@ -17,13 +17,17 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { InventoryProvider } from 'src/providers/inventory.gateway.provider';
 
 @ApiBearerAuth()
 @ApiTags('order')
 @Controller('order')
 @UseGuards(AuthGuard)
 export class OrderController {
-  constructor(private readonly orderProvider: OrderProvider) {}
+  constructor(
+    private readonly orderProvider: OrderProvider,
+    private readonly inventoryProvider: InventoryProvider,
+  ) {}
 
   /**
    * Create an order for a given barcode.
@@ -43,8 +47,10 @@ export class OrderController {
     @Res() res: Response,
   ) {
     const userId = request.userId;
-    const inventoryResponse =
-      await this.orderProvider.getItemBybarcodeFromOrder(userId, barcode);
+    const inventoryResponse = await this.inventoryProvider.getItemBybarcode(
+      userId,
+      barcode,
+    );
     if (!inventoryResponse.success) {
       return res.status(inventoryResponse.status as number).json({
         success: inventoryResponse.success,

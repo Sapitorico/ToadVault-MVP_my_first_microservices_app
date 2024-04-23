@@ -4,6 +4,9 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 import { UsersController } from 'src/controllers/users.gateway';
 import { UsersProvider } from 'src/providers/users.gateway.provider';
 import { Partitioners } from 'kafkajs';
+import { AuthProvider } from 'src/providers/auth.gateway.provider';
+import { AuthGuard } from 'src/guards/auth.gateway.provider';
+process.loadEnvFile();
 
 @Module({
   imports: [
@@ -26,7 +29,7 @@ import { Partitioners } from 'kafkajs';
       },
     ]),
   ],
-  providers: [UsersProvider],
+  providers: [UsersProvider, AuthGuard, AuthProvider],
   controllers: [UsersController],
 })
 export class UsersModule {}

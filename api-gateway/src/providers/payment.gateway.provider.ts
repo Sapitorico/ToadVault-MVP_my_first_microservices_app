@@ -9,6 +9,9 @@ export class PaymentProvider {
     private paymentClient: ClientKafka,
   ) {}
 
+  /**
+   * Initializes the module and sets up the payment client.
+   */
   async onModuleInit() {
     this.paymentClient.subscribeToResponseOf('payment');
     await this.paymentClient.connect();
