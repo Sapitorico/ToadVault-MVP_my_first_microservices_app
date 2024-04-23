@@ -1,5 +1,5 @@
-import { Controller, Get, Res, Post, Body, Put, Param } from '@nestjs/common';
-import { EventPattern } from '@nestjs/microservices';
+import { Controller, Get, Res } from '@nestjs/common';
+import { MessagePattern, Payload } from '@nestjs/microservices';
 import { Response } from 'express';
 import { ProductProvider } from 'src/product.provider';
 import { productData } from './entities/product.entity';
@@ -13,8 +13,8 @@ export class ProductController {
    * @param productData - The data of the product to be created.
    * @returns The response from adding the product.
    */
-  @EventPattern('add_new_product')
-  async createProduct(productData: productData) {
+  @MessagePattern('add_new_product')
+  async createProduct(@Payload() productData: productData) {
     const validation = this.productProvider.validateProductData(productData);
     if (!validation.success) {
       return validation;
@@ -38,8 +38,8 @@ export class ProductController {
    * @param barcode - The barcode or ID of the product.
    * @returns The response from retrieving the product.
    */
-  @EventPattern('get_prodcut_by_barcode_or_id')
-  async getProdcutById(barcode: string) {
+  @MessagePattern('get_prodcut_by_barcode_or_id')
+  async getProdcutById(@Payload() barcode: string) {
     const code = this.productProvider.verifyBarcode(barcode);
     if (typeof code === 'object' && !code.success) {
       return code;

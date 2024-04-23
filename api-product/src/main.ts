@@ -1,14 +1,24 @@
 import { NestFactory } from '@nestjs/core';
 import { Transport, MicroserviceOptions } from '@nestjs/microservices';
 import { ProductModule } from './product.module';
+import { Partitioners } from 'kafkajs';
 
 async function bootstrap() {
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
     ProductModule,
     {
-      transport: Transport.TCP,
+      transport: Transport.KAFKA,
       options: {
-        port: parseInt(process.env.PORT),
+        client: {
+          clientId: 'products-client',
+          brokers: ['localhost:9092'],
+        },
+        consumer: {
+          groupId: 'products-consumer',
+        },
+        producer: {
+          createPartitioner: Partitioners.LegacyPartitioner,
+        },
       },
     },
   );

@@ -9,7 +9,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { InventoryProvider } from 'src/providers/inventory.gateway.provider';
 import { AuthGuard } from 'src/guards/auth.gateway.provider';
 import { OrderProvider } from 'src/providers/order.gateway.provider';
 import {
@@ -18,6 +17,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { InventoryProvider } from 'src/providers/inventory.gateway.provider';
 
 @ApiBearerAuth()
 @ApiTags('order')
@@ -25,8 +25,8 @@ import {
 @UseGuards(AuthGuard)
 export class OrderController {
   constructor(
-    private readonly inventoryProvider: InventoryProvider,
     private readonly orderProvider: OrderProvider,
+    private readonly inventoryProvider: InventoryProvider,
   ) {}
 
   /**

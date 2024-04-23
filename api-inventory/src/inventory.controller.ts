@@ -1,5 +1,5 @@
 import { Controller } from '@nestjs/common';
-import { EventPattern } from '@nestjs/microservices';
+import { MessagePattern, Payload } from '@nestjs/microservices';
 import { inventoryData } from 'src/entities/inventory.entitie';
 import { InventoryProvider } from 'src/inventory.provider';
 
@@ -15,8 +15,10 @@ export class InventoryController {
    * @param data - The data containing the user ID and item data.
    * @returns The response from adding the item to the inventory.
    */
-  @EventPattern('add_new_item')
-  async addItemToInventory(data: { user_id: string; itemData: inventoryData }) {
+  @MessagePattern('add_new_item')
+  async addItemToInventory(
+    @Payload() data: { user_id: string; itemData: inventoryData },
+  ) {
     const { user_id, itemData } = data;
     const validate = this.inventoryProvider.validateNewItemData(itemData);
     if (!validate.success) {
@@ -31,8 +33,8 @@ export class InventoryController {
    * @param user_id - The ID of the user.
    * @returns The inventory for the specified user.
    */
-  @EventPattern('get_inventory')
-  async getInventory(user_id: string) {
+  @MessagePattern('get_inventory')
+  async getInventory(@Payload() user_id: string) {
     const response = await this.inventoryProvider.getInventory(user_id);
     return response;
   }
@@ -43,12 +45,15 @@ export class InventoryController {
    * @param data - The data containing the user ID and item data.
    * @returns A Promise that resolves to the response of the update operation.
    */
-  @EventPattern('update_itme')
-  async handleUpdateItem(data: {
-    user_id: string;
-    barcode: string;
-    itemData: inventoryData;
-  }) {
+  @MessagePattern('update_itme')
+  async handleUpdateItem(
+    @Payload()
+    data: {
+      user_id: string;
+      barcode: string;
+      itemData: inventoryData;
+    },
+  ) {
     const { user_id, barcode, itemData } = data;
     const validate = this.inventoryProvider.validateUpdateItemData(itemData);
     if (!validate.success) {
@@ -67,8 +72,8 @@ export class InventoryController {
    * @param data - The data containing the user ID and barcode.
    * @returns The item from the inventory with the specified barcode.
    */
-  @EventPattern('get_item_by_barcode')
-  async getItem(data: { user_id: string; barcode: string }) {
+  @MessagePattern('get_item_by_barcode')
+  async getItem(@Payload() data: { user_id: string; barcode: string }) {
     const { user_id, barcode } = data;
     const response = await this.inventoryProvider.getItemByBarcode(
       user_id,
@@ -76,4 +81,5 @@ export class InventoryController {
     );
     return response;
   }
+
 }
