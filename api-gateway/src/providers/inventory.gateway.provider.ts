@@ -21,6 +21,7 @@ export class InventoryProvider {
     this.inventoryClient.subscribeToResponseOf('get_inventory');
     this.inventoryClient.subscribeToResponseOf('get_item_by_barcode');
     this.inventoryClient.subscribeToResponseOf('update_inventory');
+    this.inventoryClient.subscribeToResponseOf('get_item_by_barcode_for_order');
     await this.inventoryClient.connect();
   }
 
@@ -92,7 +93,22 @@ export class InventoryProvider {
       items: items
     }
     return await this.inventoryClient
-      .send('update_inventory', data)
+      .send('update_inventory', data).toPromise();
+  }
+  
+  /**
+   * Retrieves an item from the order by barcode for a specific user.
+   * @param userId - The ID of the user.
+   * @param barcode - The barcode of the item.
+   * @returns A promise that resolves to the retrieved item.
+   */
+  async getItemBybarcodeFromOrder(userId: string, barcode: string) {
+    const data = {
+      user_id: userId,
+      barcode: barcode,
+    };
+    return await this.inventoryClient
+      .send('get_item_by_barcode_for_order', data)
       .toPromise();
   }
 }
