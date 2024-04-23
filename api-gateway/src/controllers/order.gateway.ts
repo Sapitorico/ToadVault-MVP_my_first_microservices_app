@@ -9,7 +9,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { InventoryProvider } from 'src/providers/inventory.gateway.provider';
 import { AuthGuard } from 'src/guards/auth.gateway.provider';
 import { OrderProvider } from 'src/providers/order.gateway.provider';
 import {
@@ -24,10 +23,7 @@ import {
 @Controller('order')
 @UseGuards(AuthGuard)
 export class OrderController {
-  constructor(
-    private readonly inventoryProvider: InventoryProvider,
-    private readonly orderProvider: OrderProvider,
-  ) {}
+  constructor(private readonly orderProvider: OrderProvider) {}
 
   /**
    * Create an order for a given barcode.
@@ -47,10 +43,8 @@ export class OrderController {
     @Res() res: Response,
   ) {
     const userId = request.userId;
-    const inventoryResponse = await this.inventoryProvider.getItemBybarcode(
-      userId,
-      barcode,
-    );
+    const inventoryResponse =
+      await this.orderProvider.getItemBybarcodeFromOrder(userId, barcode);
     if (!inventoryResponse.success) {
       return res.status(inventoryResponse.status as number).json({
         success: inventoryResponse.success,

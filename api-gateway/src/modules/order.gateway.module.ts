@@ -1,32 +1,49 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { InventoryController } from 'src/controllers/inventory.gateway';
-import { InventoryProvider } from 'src/providers/inventory.gateway.provider';
-import { AuthModule } from './auth.gateway.module';
 import { AuthProvider } from 'src/providers/auth.gateway.provider';
 import { OrderController } from 'src/controllers/order.gateway';
 import { OrderProvider } from 'src/providers/order.gateway.provider';
-
+import { Partitioners } from 'kafkajs';
+process.loadEnvFile();
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
-    AuthModule,
     ClientsModule.register([
       {
-        name: process.env.INVENTORY_MICROSERVICE_NAME,
-        transport: Transport.TCP,
-        options: { port: parseInt(process.env.INVENTORY_MICROSERVICE_PORT) },
+        name: 'inventory-order-microservice',
+        transport: Transport.KAFKA,
+        options: {
+          client: {
+            clientId: process.env.INVENTORY_CLIENT_ID,
+            brokers: [process.env.BROKER],
+          },
+          consumer: {
+            groupId: process.env.INVENTORY_GROUP_ID,
+          },
+          producer: {
+            createPartitioner: Partitioners.LegacyPartitioner,
+          },
+        },
       },
       {
         name: process.env.ORDER_MICROSERVICE_NAME,
-        transport: Transport.TCP,
-        options: { port: parseInt(process.env.ORDER_MICROSERVICE_PORT) },
+        transport: Transport.KAFKA,
+        options: {
+          client: {
+            clientId: process.env.ORDER_CLIENT_ID,
+            brokers: [process.env.BROKER],
+          },
+          consumer: {
+            groupId: process.env.ORDER_GROUP_ID,
+          },
+          producer: {
+            createPartitioner: Partitioners.LegacyPartitioner,
+          },
+        },
       },
     ]),
   ],
   controllers: [OrderController],
-  providers: [AuthProvider, InventoryProvider, OrderProvider],
+  providers: [AuthProvider, OrderProvider],
 })
 export class OrderModule {}

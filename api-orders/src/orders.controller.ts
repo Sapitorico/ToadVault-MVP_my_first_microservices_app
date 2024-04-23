@@ -1,6 +1,6 @@
 import { Controller } from '@nestjs/common';
 import { OrdersService } from './orders.service';
-import { EventPattern } from '@nestjs/microservices';
+import { MessagePattern, Payload } from '@nestjs/microservices';
 import { itemData } from './entities/order.entity';
 
 @Controller()
@@ -12,8 +12,10 @@ export class OrdersController {
    * @param data - The data containing the user ID and item data.
    * @returns The response from the orders service.
    */
-  @EventPattern('order')
-  async handleCreateOrder(data: { user_id: string; itemData: itemData }) {
+  @MessagePattern('order')
+  async handleCreateOrder(
+    @Payload() data: { user_id: string; itemData: itemData },
+  ) {
     const { user_id, itemData } = data;
     const response = await this.ordersService.createOrder(user_id, itemData);
     return response;
@@ -24,8 +26,10 @@ export class OrdersController {
    * @param data - The data containing the user ID and barcode of the item to be removed.
    * @returns The response from the orders service.
    */
-  @EventPattern('remove_item')
-  async handleRemoveItem(data: { user_id: string; barcode: string }) {
+  @MessagePattern('remove_item')
+  async handleRemoveItem(
+    @Payload() data: { user_id: string; barcode: string },
+  ) {
     const { user_id, barcode } = data;
     const response = await this.ordersService.removeItem(user_id, barcode);
     return response;
@@ -36,8 +40,8 @@ export class OrdersController {
    * @param user_id - The ID of the user whose order needs to be cancelled.
    * @returns The response from the orders service.
    */
-  @EventPattern('cancel_order')
-  async handleCancelOrder(user_id: string) {
+  @MessagePattern('cancel_order')
+  async handleCancelOrder(@Payload() user_id: string) {
     const response = await this.ordersService.cancelOrder(user_id);
     return response;
   }
@@ -47,8 +51,8 @@ export class OrdersController {
    * @param user_id - The ID of the user whose order needs to be retrieved.
    * @returns The response from the orders service.
    */
-  @EventPattern('get_order')
-  async handleGetOrder(user_id: string) {
+  @MessagePattern('get_order')
+  async handleGetOrder(@Payload() user_id: string) {
     const response = await this.ordersService.getOrder(user_id);
     return response;
   }

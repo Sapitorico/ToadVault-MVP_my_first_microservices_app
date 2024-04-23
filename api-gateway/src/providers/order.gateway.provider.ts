@@ -1,13 +1,29 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
+import { ClientKafka } from '@nestjs/microservices';
 import { inventoryData } from 'src/models/inventory.model';
+process.loadEnvFile();
 
 /**
  * Provider class for handling orders.
  */
 @Injectable()
 export class OrderProvider {
-  constructor(@Inject('order-microservice') private orderClient: ClientProxy) {}
+  constructor(
+    @Inject(process.env.ORDER_MICROSERVICE_NAME)
+    private orderClient: ClientKafka,
+    @Inject('inventory-order-microservice')
+    private inventoryClient: ClientKafka,
+  ) {}
+
+  async onModuleInit() {
+    this.orderClient.subscribeToResponseOf('order');
+    this.orderClient.subscribeToResponseOf('get_order');
+    this.orderClient.subscribeToResponseOf('remove_item');
+    this.orderClient.subscribeToResponseOf('cancel_order');
+    this.inventoryClient.subscribeToResponseOf('get_item_by_barcode');
+    await this.inventoryClient.connect();
+    await this.orderClient.connect();
+  }
 
   /**
    * Generates an order for a user.
@@ -53,5 +69,21 @@ export class OrderProvider {
    */
   async cancelOrder(userId: string) {
     return await this.orderClient.send('cancel_order', userId).toPromise();
+  }
+
+  /**
+   * Retrieves an item from the inventory based on its barcode.
+   * @param userId - The ID of the user.
+   * @param barcode - The barcode of the item.
+   * @returns A Promise that resolves to the item data.
+   */
+  async getItemBybarcodeFromOrder(userId: string, barcode: string) {
+    const data = {
+      user_id: userId,
+      barcode: barcode,
+    };
+    return await this.inventoryClient
+      .send('get_item_by_barcode', data)
+      .toPromise();
   }
 }
