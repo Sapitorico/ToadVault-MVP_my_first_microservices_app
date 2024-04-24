@@ -6,7 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import { SecurityService } from './security/user.security.service';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true })],
+  imports: [],
   controllers: [UsersController],
   providers: [UsersServices, DatabaseService, SecurityService],
 })

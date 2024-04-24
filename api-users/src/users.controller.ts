@@ -1,23 +1,39 @@
 import { Controller } from '@nestjs/common';
 import { UsersServices } from './users.service';
-import { EventPattern } from '@nestjs/microservices';
+import { MessagePattern, Payload } from '@nestjs/microservices';
+import { userData } from './entities/user.entity';
 
 @Controller()
 export class UsersController {
   constructor(private readonly usersService: UsersServices) {}
 
-  @EventPattern('register_user')
-  async handleRegister(data: any) {
+  /**
+   * Handles the 'register_user' event.
+   * Validates the registration data and registers the user.
+   * @param data - The data for user registration.
+   * @returns The response from the registration process.
+   */
+  // @EventPattern('register_user')
+  @MessagePattern('register_user')
+  async handleRegister(@Payload() data: userData) {
+    console.log("entro en usuairos")
     const validate = this.usersService.validateDataRegister(data);
     if (!validate.success) {
       return validate;
     }
     const response = await this.usersService.register(data);
+    console.log(response)
     return response;
   }
 
-  @EventPattern('login_user')
-  async handleLogin(data: any) {
+  /**
+   * Handles the 'login_user' event.
+   * Validates the login data and performs user login.
+   * @param data - The data for user login.
+   * @returns The response from the login process.
+   */
+  @MessagePattern('login_user')
+  async handleLogin(@Payload() data: userData) {
     const validate = this.usersService.validateDataLogin(data);
     if (!validate.success) {
       return validate;
@@ -25,5 +41,4 @@ export class UsersController {
     const response = await this.usersService.login(data);
     return response;
   }
-
 }

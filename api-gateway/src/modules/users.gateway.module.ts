@@ -3,19 +3,33 @@ import { ConfigModule } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { UsersController } from 'src/controllers/users.gateway';
 import { UsersProvider } from 'src/providers/users.gateway.provider';
+import { Partitioners } from 'kafkajs';
+import { AuthProvider } from 'src/providers/auth.gateway.provider';
+import { AuthGuard } from 'src/guards/auth.gateway.provider';
+process.loadEnvFile();
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
     ClientsModule.register([
       {
         name: process.env.USERS_MICROSERVICE_NAME,
-        transport: Transport.TCP,
-        options: { port: parseInt(process.env.USERS_MICROSERVICE_PORT) },
+        transport: Transport.KAFKA,
+        options: {
+          client: {
+            clientId: process.env.USERS_CLIENT_ID,
+            brokers: [process.env.BROKER],
+          },
+          consumer: {
+            groupId: process.env.USERS_GROUP_ID,
+          },
+          producer: {
+            createPartitioner: Partitioners.LegacyPartitioner,
+          },
+        },
       },
     ]),
   ],
-  providers: [UsersProvider],
+  providers: [UsersProvider, AuthGuard, AuthProvider],
   controllers: [UsersController],
 })
 export class UsersModule {}

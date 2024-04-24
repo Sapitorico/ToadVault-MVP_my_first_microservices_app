@@ -14,11 +14,24 @@ import { InventoryProvider } from 'src/providers/inventory.gateway.provider';
 import { ProductProvider } from 'src/providers/product.gateway.provider';
 import { AuthGuard } from 'src/guards/auth.gateway.provider';
 import { productData } from 'src/models/product.model';
-import { inventoryData } from 'src/models/inventory.model';
+import {
+  NewItemDto,
+  UpdateItemDto,
+  inventoryData,
+} from 'src/models/inventory.model';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 /**
  * Controller for managing inventory-related operations.
  */
+@ApiBearerAuth()
+@ApiTags('inventory')
 @Controller('inventory')
 @UseGuards(AuthGuard)
 export class InventoryController {
@@ -34,6 +47,14 @@ export class InventoryController {
    * @param res - The response object.
    * @returns The response with success status, message, and item details.
    */
+  @ApiOperation({ summary: 'Add new item to inventory' })
+  @ApiResponse({ status: 201, description: 'Created successfully.' })
+  @ApiResponse({ status: 400, description: 'Missing fields.' })
+  @ApiResponse({ status: 409, description: 'Item already exists.' })
+  @ApiBody({
+    type: NewItemDto,
+    description: 'Json structure for item object',
+  })
   @Post('new')
   async addItem(
     @Req() request,
@@ -67,7 +88,15 @@ export class InventoryController {
    * @param res - The response object.
    * @returns The updated item details.
    */
-  @Post('update/:barcode')
+  @ApiOperation({ summary: 'Update item in inventory' })
+  @ApiResponse({ status: 200, description: 'Updated successfully.' })
+  @ApiResponse({ status: 400, description: 'Missing fields.' })
+  @ApiResponse({ status: 404, description: 'Item not found' })
+  @ApiBody({
+    type: UpdateItemDto,
+    description: 'Json structure for item object',
+  })
+  @Put('update/:barcode')
   async updateItem(
     @Req() request,
     @Param('barcode') barcode: string,
@@ -92,6 +121,11 @@ export class InventoryController {
    * @param res - The response object.
    * @returns The response with success status, message, and inventory items.
    */
+  @ApiOperation({ summary: 'Get inventory' })
+  @ApiResponse({
+    status: 200,
+    description: 'Inventory retrieved successfully.',
+  })
   @Get()
   async getInventory(@Req() request, @Res() res: Response) {
     const userId = request.userId;
@@ -110,6 +144,9 @@ export class InventoryController {
    * @param res - The response object.
    * @returns The response with success status, message, and item details.
    */
+  @ApiOperation({ summary: 'Get item by barcode' })
+  @ApiResponse({ status: 200, description: 'Item retrieved successfully.' })
+  @ApiResponse({ status: 404, description: 'Item not found' })
   @Get('item/:barcode')
   async getItemBybarcode(
     @Req() request,
