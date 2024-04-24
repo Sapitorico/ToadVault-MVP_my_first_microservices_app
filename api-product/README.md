@@ -14,13 +14,13 @@ Para configurar el entorno de la aplicación, necesitarás crear un archivo `.en
 
 ```bash
 # microservices config
-PORT=your_port
-
-
-# MONGO connection
 DB_CONN_STRING=your_database_string_connection
 DB_NAME=your_database_name
 
+# Microservice config
+CLIENT_ID=your_client_id
+BROKER=your_broker
+GROUP_ID=your_group_id
 ```
 
 ## Running the app

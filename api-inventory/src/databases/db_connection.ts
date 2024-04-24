@@ -12,7 +12,6 @@ export class DatabaseProvider {
   async connect() {
     try {
       this.client = new MongoClient(process.env.DB_CONN_STRING);
-      console.log('Connected to MongoDB');
     } catch (error) {
       console.error('Error connecting to MongoDB:', error);
     }

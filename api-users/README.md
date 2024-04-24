@@ -13,17 +13,18 @@ pnpm install
 Para configurar el entorno de la aplicación, necesitarás crear un archivo `.env` en la raíz del proyecto. Este archivo debe contener las siguientes variables de entorno:
 
 ```bash
-# microservices config
-PORT=your_port
-
 # security
-PASSWORD_SALT=your_salt_hash
-JWT_SECRET=your_secret_key
+PASSWORD_SALT=your_password_salt
+JWT_SECRET=your_jwt_secret
 
 # MONGO connection
 DB_CONN_STRING=your_database_string_connection
 DB_NAME=your_database_name
 
+# Microservice config
+CLIENT_ID=your_client_id
+BROKER=your_broker
+GROUP_ID=your_group_id
 ```
 
 ## Running the app

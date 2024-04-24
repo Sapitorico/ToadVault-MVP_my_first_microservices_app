@@ -13,14 +13,14 @@ pnpm install
 Para configurar el entorno de la aplicación, necesitarás crear un archivo `.env` en la raíz del proyecto. Este archivo debe contener las siguientes variables de entorno:
 
 ```bash
-# microservices config
-PORT=your_port
+#MONGO connection
+DB_CONN_STRING=mongodb://root:evolina553@mongodb:27017
+DB_NAME=inventory_db
 
-
-# MONGO connection
-DB_CONN_STRING=your_database_string_connection
-DB_NAME=your_database_name
-
+#Microservice config
+CLIENT_ID=inventory-client
+BROKER=kafka:9092
+GROUP_ID=inventory-consumer
 ```
 
 ## Running the app

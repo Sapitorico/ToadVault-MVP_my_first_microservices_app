@@ -3,6 +3,7 @@ import { DatabaseService } from './databases/db_connection';
 import { User, userData } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { SecurityService } from './security/user.security.service';
+process.loadEnvFile();
 
 /**
  * Service responsible for user-related operations.
@@ -96,7 +97,7 @@ export class UsersServices {
         message: "'name' must be a string",
       };
     }
-
+    console.log('entro en validacion de usuairo');
     const validate = this.validateDataLogin(data);
     if (!validate.success) {
       return validate;

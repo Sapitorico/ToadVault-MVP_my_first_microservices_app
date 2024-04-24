@@ -39,6 +39,11 @@ export class OrderController {
   @ApiOperation({ summary: 'Create order for item' })
   @ApiResponse({ status: 201, description: 'Order created successfully' })
   @ApiResponse({ status: 200, description: 'Order updated successfully' })
+  @ApiResponse({ status: 400, description: 'Insufficient stock' })
+  @ApiResponse({
+    status: 404,
+    description: 'Item does not have price or stock greater than 0',
+  })
   @ApiResponse({ status: 404, description: 'Item not found' })
   @Get(':barcode')
   async createOrder(

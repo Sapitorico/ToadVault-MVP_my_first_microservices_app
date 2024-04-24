@@ -16,11 +16,13 @@ export class UsersController {
   // @EventPattern('register_user')
   @MessagePattern('register_user')
   async handleRegister(@Payload() data: userData) {
+    console.log("entro en usuairos")
     const validate = this.usersService.validateDataRegister(data);
     if (!validate.success) {
       return validate;
     }
     const response = await this.usersService.register(data);
+    console.log(response)
     return response;
   }
 
