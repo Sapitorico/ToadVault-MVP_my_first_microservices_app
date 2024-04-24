@@ -2,7 +2,6 @@ import { NestFactory } from '@nestjs/core';
 import { Transport, MicroserviceOptions } from '@nestjs/microservices';
 import { UsersModule } from './users.module';
 import { Partitioners } from 'kafkajs';
-process.loadEnvFile();
 
 async function bootstrap() {
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(

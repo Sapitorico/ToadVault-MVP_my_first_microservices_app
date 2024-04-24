@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { MongoClient } from 'mongodb';
-process.loadEnvFile();
 
 
 @Injectable()

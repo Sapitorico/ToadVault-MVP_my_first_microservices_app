@@ -1,7 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientKafka } from '@nestjs/microservices';
 import { productData } from 'src/models/product.model';
-process.loadEnvFile();
 
 @Injectable()
 export class ProductProvider {

@@ -6,7 +6,6 @@ import { UsersProvider } from 'src/providers/users.gateway.provider';
 import { Partitioners } from 'kafkajs';
 import { AuthProvider } from 'src/providers/auth.gateway.provider';
 import { AuthGuard } from 'src/guards/auth.gateway.provider';
-process.loadEnvFile();
 
 @Module({
   imports: [

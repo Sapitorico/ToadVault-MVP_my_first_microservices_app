@@ -31,69 +31,12 @@ Para ejecutar la aplicación, sigue estos pasos:
 
 3. Crea un archivo `.env` en el directorio raíz y configura las variables de entorno requeridas
 
-### Opción 1: Ejecución sin pasar variables de entorno como argumentos
+4. Configura el entorno para cada microservicio según lo requerido en sus respectivos READMEs. Esto puede incluir la configuración de variables de entorno específicas y otros ajustes necesarios para cada microservicio.
 
-Si las variables de entorno necesarias están configuradas en los archivos `.env` según lo requerido en sus respectivos READMEs de cada servicio y no necesitas pasarlas como argumentos al ejecutar Docker Compose, puedes utilizar el siguiente comando para iniciar la aplicación:
+5. Ejecuta el siguiente comando para construir y levantar los servicios de la aplicación:
 
 ```bash
 docker-compose up --build -d
-```
-
-### Opción 2: Ejecución pasando variables de entorno como argumentos
-
-Si prefieres pasar las variables de entorno como argumentos al ejecutar Docker Compose, puedes utilizar el siguiente comando:
-Este comando construirá las imágenes de Docker necesarias para cada servicio y luego las levantará en contenedores en segundo plano.
-
-```bash
-docker-compose \
--e MONGO_INITDB_ROOT_USERNAME=myusername \
--e MONGO_INITDB_ROOT_PASSWORD=mypassword \
--e PASSWORD_SALT=10 \
--e JWT_SECRET=mysecret \
--e DB_CONN_STRING=mongodb://myusername:mypassword@mongodb:27017 \
--e DB_NAME=users_db \
--e CLIENT_ID=users-client \
--e BROKER=kafka:9092 \
--e GROUP_ID=users-consumer \
--e DB_NAME=prodcuts_db \
--e CLIENT_ID=products-client \
--e BROKER=kafka:9092 \
--e GROUP_ID=products-consumer \
--e DB_NAME=inventory_db \
--e CLIENT_ID=inventory-client \
--e BROKER=kafka:9092 \
--e GROUP_ID=inventory-consumer \
--e DB_NAME=order_db \
--e CLIENT_ID=order-client \
--e BROKER=kafka:9092 \
--e GROUP_ID=order-consumer \
--e DB_NAME=payments_db \
--e CLIENT_ID=payment-client \
--e BROKER=kafka:9092 \
--e GROUP_ID=payment-consumer \
--e DOMAIN=mydomain \
--e PORT=3000 \
--e API_PREFIX=api \
--e API_VERSION=v1 \
--e JWT_SECRET=sapardo \
--e ALGORITHM=HS256 \
--e BROKER=kafka:9092 \
--e USERS_MICROSERVICE_NAME=users-microservice \
--e USERS_CLIENT_ID=users-client \
--e USERS_GROUP_ID=users-consumer \
--e PRODUCT_MICROSERVICE_NAME=product-microservice \
--e PRODUCT_CLIENT_ID=products-client \
--e PRODUCT_GROUP_ID=products-consumer \
--e INVENTORY_MICROSERVICE_NAME=inventory-microservice \
--e INVENTORY_CLIENT_ID=inventory-client \
--e INVENTORY_GROUP_ID=inventory-consumer \
--e ORDER_MICROSERVICE_NAME=order-microservice \
--e ORDER_CLIENT_ID=order-client \
--e ORDER_GROUP_ID=order-consumer \
--e PAYMENT_MICROSERVICE_NAME=payment-microservice \
--e PAYMENT_CLIENT_ID=payment-client \
--e PAYMENT_GROUP_ID=payment-consumer \
-up -d --build
 ```
 
 - Una vez que todos los servicios estén en funcionamiento, podrás acceder a la aplicación a través del puerto 3000.

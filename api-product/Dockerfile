@@ -37,7 +37,7 @@ WORKDIR /products
 COPY --from=build /products/dist ./dist
 COPY --from=build /products/node_modules ./node_modules
 COPY --from=build /products/package.json ./package.json
-COPY --from=build /products/.env ./.env
+# COPY --from=build /products/.env ./.env
 
 ARG DB_CONN_STRING
 ARG DB_NAME

@@ -1,7 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientKafka } from '@nestjs/microservices';
 import { User } from 'src/models/user.model';
-process.loadEnvFile();
 
 
 @Injectable()

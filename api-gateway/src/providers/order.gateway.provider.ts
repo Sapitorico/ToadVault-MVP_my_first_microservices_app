@@ -1,7 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientKafka } from '@nestjs/microservices';
 import { inventoryData } from 'src/models/inventory.model';
-process.loadEnvFile();
 
 /**
  * Provider class for handling orders.

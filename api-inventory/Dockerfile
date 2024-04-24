@@ -37,7 +37,7 @@ WORKDIR /inventory
 COPY --from=build /inventory/dist ./dist
 COPY --from=build /inventory/node_modules ./node_modules
 COPY --from=build /inventory/package.json ./package.json
-COPY --from=build /inventory/.env ./.env
+# COPY --from=build /inventory/.env ./.env
 
 ARG DB_CONN_STRING
 ARG DB_NAME

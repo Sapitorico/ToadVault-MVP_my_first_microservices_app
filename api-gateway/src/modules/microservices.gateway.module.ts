@@ -9,7 +9,6 @@ import { OrderController } from 'src/controllers/order.gateway';
 import { OrderProvider } from 'src/providers/order.gateway.provider';
 import { PaymentController } from 'src/controllers/payment.gateway';
 import { PaymentProvider } from 'src/providers/payment.gateway.provider';
-process.loadEnvFile();
 
 /**
  * Represents the module for the microservices gateway.

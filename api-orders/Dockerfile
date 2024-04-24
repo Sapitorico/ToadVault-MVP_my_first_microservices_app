@@ -37,7 +37,7 @@ WORKDIR /order
 COPY --from=build /order/dist ./dist
 COPY --from=build /order/node_modules ./node_modules
 COPY --from=build /order/package.json ./package.json
-COPY --from=build /order/.env ./.env
+# COPY --from=build /order/.env ./.env
 
 ARG DB_CONN_STRING
 ARG DB_NAME

@@ -41,7 +41,7 @@ WORKDIR /users
 COPY --from=build /users/dist ./dist
 COPY --from=build /users/node_modules ./node_modules
 COPY --from=build /users/package.json ./package.json
-COPY --from=build /users/.env ./.env
+# COPY --from=build /users/.env ./.env
 
 ARG DB_CONN_STRING
 ARG DB_NAME

@@ -86,7 +86,7 @@ WORKDIR /gateway
 COPY --from=build /gateway/dist ./dist
 COPY --from=build /gateway/node_modules ./node_modules
 COPY --from=build /gateway/package.json ./package.json
-COPY --from=build /gateway/.env ./.env
+# COPY --from=build /gateway/.env ./.env
 
 # app config development
 ARG DOMAIN

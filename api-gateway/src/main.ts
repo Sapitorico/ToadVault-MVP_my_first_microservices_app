@@ -1,7 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-process.loadEnvFile();
 
 const domain = process.env.DOMAIN;
 const port = process.env.PORT || 3000;

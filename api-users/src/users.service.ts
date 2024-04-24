@@ -3,7 +3,6 @@ import { DatabaseService } from './databases/db_connection';
 import { User, userData } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { SecurityService } from './security/user.security.service';
-process.loadEnvFile();
 
 /**
  * Service responsible for user-related operations.

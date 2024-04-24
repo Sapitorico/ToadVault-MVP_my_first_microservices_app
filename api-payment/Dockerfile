@@ -37,7 +37,7 @@ WORKDIR /payment
 COPY --from=build /payment/dist ./dist
 COPY --from=build /payment/node_modules ./node_modules
 COPY --from=build /payment/package.json ./package.json
-COPY --from=build /payment/.env ./.env
+# COPY --from=build /payment/.env ./.env
 
 ARG DB_CONN_STRING
 ARG DB_NAME
