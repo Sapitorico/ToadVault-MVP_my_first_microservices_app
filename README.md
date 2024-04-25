@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://github.com/Sapitorico/ToadVault-MVP_microservices/assets/105575956/576592a1-fb40-482d-9a82-c9e818f06abe" alt="Descripción de la imagen" width="500" height="500">
+</p>
+
 # 🐸 ToadVault-MVP_microservices 🛒
 
 ToadVault-MVP_microservices es una caja registradora web basada en microservicios, desarrollada en Nest.js y conectada a través de Kafka. Utiliza una arquitectura de microservicios para gestionar diferentes aspectos del negocio, como usuarios, productos, inventario, órdenes y pagos.
@@ -9,6 +13,13 @@ ToadVault-MVP_microservices es una caja registradora web basada en microservicio
 - **Message Broker:** Kafka
 - **Contenedorización:** Docker
 - **Gestión de Dependencias:** Docker Compose
+
+## Requisitos Previos 🛠️
+
+Antes de ejecutar la aplicación, asegúrate de tener Docker y Docker Compose instalados en tu sistema.
+
+- Puedes instalar Docker siguiendo las instrucciones en [Get Docker](https://docs.docker.com/get-docker/).
+- Para instalar Docker Compose, sigue las instrucciones en [Install Docker Compose](https://docs.docker.com/compose/install/).
 
 ## Configuración y Ejecución con Docker Compose 🐳
 
