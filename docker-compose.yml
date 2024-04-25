@@ -165,8 +165,8 @@ services:
     - PAYMENT_MICROSERVICE_NAME=payment-microservice
     - PAYMENT_CLIENT_ID=payment-client
     - PAYMENT_GROUP_ID=payment-consumer
-    ports:
-      - "3000:3000"
+    # ports:
+    #   - "3000:3000"
     networks:
       - ev
     depends_on:

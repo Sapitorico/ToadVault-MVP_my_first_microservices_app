@@ -151,6 +151,6 @@ ENV PAYMENT_GROUP_ID=$PAYMENT_GROUP_ID
 
 ENTRYPOINT ["/sbin/tini", "--"]
 
-EXPOSE 3000
+EXPOSE ${PORT:-3000}
 
 CMD [ "pnpm", "run", "start:prod" ]
