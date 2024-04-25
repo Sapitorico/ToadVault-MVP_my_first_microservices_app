@@ -144,7 +144,7 @@ services:
     #   - ./api-gateway/.env
     environment:
     - DOMAIN=mydomain
-    - PORT=8000
+    # - PORT=8000
     - API_PREFIX=api
     - API_VERSION=v1
     - JWT_SECRET=mysecret
@@ -166,7 +166,7 @@ services:
     - PAYMENT_CLIENT_ID=payment-client
     - PAYMENT_GROUP_ID=payment-consumer
     ports:
-      - "8000:8000"
+      - "3000:3000"
     networks:
       - ev
     depends_on:
