@@ -11,8 +11,6 @@ services:
   mongodb:
     image: mongo:latest
     container_name: mongodb
-    # env_file:
-    #   - .env
     environment:
       - MONGO_INITDB_ROOT_USERNAME=myusername
       - MONGO_INITDB_ROOT_PASSWORD=mypassword
@@ -57,8 +55,6 @@ services:
   users:
     build: ./api-users
     restart: always
-    # env_file:
-    #   - ./api-users/.env
     environment:
       - PASSWORD_SALT=10
       - JWT_SECRET=mysecret
@@ -75,8 +71,6 @@ services:
   products:
     build: ./api-product
     restart: always
-    # env_file:
-    #   - ./api-product/.env
     environment:    
       - DB_CONN_STRING=mongodb://myusername:mypassword@mongodb:27017
       - DB_NAME=prodcuts_db
@@ -91,8 +85,6 @@ services:
   inventory:
     build: ./api-inventory
     restart: always
-    # env_file:
-    #   - ./api-inventory/.env
     environment:  
       - DB_CONN_STRING=mongodb://myusername:mypassword@mongodb:27017
       - DB_NAME=inventory_db
@@ -107,8 +99,6 @@ services:
   order:
     build: ./api-orders
     restart: always
-    # env_file:
-    #   - ./api-orders/.env
     environment:
       - DB_CONN_STRING=mongodb://myusername:mypassword@mongodb:27017
       - DB_NAME=order_db
@@ -123,8 +113,6 @@ services:
   payment:
     build: ./api-payment
     restart: always
-    # env_file:
-    #   - ./api-payment/.env
     environment:
       - DB_CONN_STRING=mongodb://myusername:mypassword@mongodb:27017
       - DB_NAME=payments_db
@@ -140,8 +128,6 @@ services:
   gateway:
     build: ./api-gateway
     restart: always
-    # env_file:
-    #   - ./api-gateway/.env
     environment:
     - DOMAIN=mydomain
     - PORT=3000

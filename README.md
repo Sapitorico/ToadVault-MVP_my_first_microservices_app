@@ -10,30 +10,14 @@ ToadVault-MVP_microservices es una caja registradora web basada en microservicio
 - **Contenedorización:** Docker
 - **Gestión de Dependencias:** Docker Compose
 
-## Configuración del Entorno ⚙️
+## Configuración y Ejecución con Docker Compose 🐳
 
-Antes de ejecutar la aplicación, asegúrate de configurar correctamente el entorno en el archivo `.env` en el directorio raíz.
-
-```env
-MONGO_INITDB_ROOT_USERNAME=your_user
-MONGO_INITDB_ROOT_PASSWORD=yout_password
-```
-
-## Ejecución con Docker Compose 🐳
-
-Antes de iniciar la aplicación, verifique que el entorno de cada microservicio se haya configurado correctamente según lo especificado en sus respectivos READMEs. Los requisitos de configuración de cada microservicio incluyen variables de entorno específicas. Consulte los READMEs de cada microservicio para obtener instrucciones detalladas sobre cómo configurar su entorno.
-
-Para ejecutar la aplicación, sigue estos pasos:
-
-1. Asegúrate de tener Docker y Docker Compose instalados en tu sistema.
-
-2. Navega al directorio raíz del proyecto clonado.
-
-3. Crea un archivo `.env` en el directorio raíz y configura las variables de entorno requeridas
-
-4. Configura el entorno para cada microservicio según lo requerido en sus respectivos READMEs. Esto puede incluir la configuración de variables de entorno específicas y otros ajustes necesarios para cada microservicio.
-
-5. Ejecuta el siguiente comando para construir y levantar los servicios de la aplicación:
+1. Abre el archivo `docker-compose.yml` en un editor de texto.
+2. Dentro de cada servicio, encuentra la sección `environment`, donde se definen las variables de entorno.
+3. Configura los valores de las variables de entorno según tus necesidades, por ejemplo, los nombres de usuario y contraseñas de MongoDB, las claves de JWT, etc.
+4. Guarda los cambios en el archivo `docker-compose.yml`.
+5. Abre una terminal y navega hasta el directorio que contiene el archivo `docker-compose.yml`.
+6. Ejecuta el siguiente comando para construir y levantar los servicios de la aplicación:
 
 ```bash
 docker-compose up --build -d
