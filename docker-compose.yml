@@ -144,7 +144,7 @@ services:
     #   - ./api-gateway/.env
     environment:
     - DOMAIN=mydomain
-    - PORT=8000
+    - PORT=3000
     - API_PREFIX=api
     - API_VERSION=v1
     - JWT_SECRET=mysecret
