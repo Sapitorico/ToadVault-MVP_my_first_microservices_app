@@ -6,6 +6,14 @@
 
 ToadVault-MVP_microservices es una caja registradora web basada en microservicios, desarrollada en Nest.js y conectada a través de Redis. Utiliza una arquitectura de microservicios para gestionar diferentes aspectos del negocio, como usuarios, productos, inventario, órdenes y pagos.
 
+## Enlace a la Aplicación en Producción 🚀
+
+Puedes acceder a la aplicación en producción a través del siguiente enlace:
+
+[ToadVault-MVP_microservices](http://ec2-54-232-36-63.sa-east-1.compute.amazonaws.com/api)
+
+¡Disfruta usando ToadVault-MVP_microservices!
+
 ## Tecnologías Principales 🚀
 
 - **Framework Backend:** Nest.js
