@@ -20,7 +20,7 @@ async function bootstrap() {
     .addTag('order')
     .addTag('payment')
     .addServer(`http://localhost:3000`, 'Local environment')
-    .addServer(`http://${domain}`, 'Production')
+    .addServer(`${domain}`, 'Production')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup(`${apiPrefix}`, app, document);
