@@ -18,17 +18,17 @@ services:
       - 27017:27017
     networks:
       - "ev"
-    restart: unless-stopped
+
 
   # Kafka service
   redis:
     image: redis:latest
     container_name: "redis"
+    restart: always
     environment:
       - REDIS_PORT=6379
     ports:
       - 6379:6379
-    restart: unless-stopped
     networks:
       - "ev"
 
@@ -130,4 +130,3 @@ services:
       - ev
     depends_on:
       - redis
-    hostname: gateway
