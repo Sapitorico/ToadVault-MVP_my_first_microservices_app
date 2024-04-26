@@ -1,22 +1,13 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ClientKafka } from '@nestjs/microservices';
+import { ClientProxy } from '@nestjs/microservices';
 import { productData } from 'src/models/product.model';
 
 @Injectable()
 export class ProductProvider {
   constructor(
     @Inject(process.env.PRODUCT_MICROSERVICE_NAME)
-    private productClient: ClientKafka,
+    private productClient: ClientProxy,
   ) {}
-
-  /**
-   * Initializes the module and subscribes to the 'add_new_product' response.
-   * Connects to the product client.
-   */
-  async onModuleInit() {
-    this.productClient.subscribeToResponseOf('add_new_product');
-    await this.productClient.connect();
-  }
 
   /**
    * Adds a new product.

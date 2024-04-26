@@ -18,115 +18,97 @@ services:
       - 27017:27017
     networks:
       - "ev"
-    restart: unless-stopped
 
-  # ZooKeeper service
-  zookeeper:
-    image: 'bitnami/zookeeper:latest'
-    container_name: "zookeeper"
-    ports:
-      - 2181:2181
-    networks:
-      - "ev"
-    environment:
-      - ALLOW_ANONYMOUS_LOGIN=yes
 
   # Kafka service
-  kafka:
-    image: bitnami/kafka:latest
-    container_name: "kafka"
+  redis:
+    image: redis:latest
+    container_name: "redis"
+    restart: always
+    environment:
+      - REDIS_PORT=6379
     ports:
-      - 9092:9092
+      - 6379:6379
     networks:
       - "ev"
-    depends_on:
-      - zookeeper
-    environment:
-      - KAFKA_BROKER_ID=1
-      - KAFKA_LISTENERS=PLAINTEXT://:9092
-      - ALLOW_PLAINTEXT_LISTENER=yes
-      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
-      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
-      - KAFKA_RESTART_ATTEMPTS=10
-      - KAFKA_RESTART_DELAY=5
-      - ZOOKEEPER_AUTOPURGE_PURGE_INTERVAL=0
 
   # Microservices
   users:
     build: ./api-users
+    container_name: "user-microservice"
     restart: always
     environment:
       - PASSWORD_SALT=10
       - JWT_SECRET=mysecret
       - DB_CONN_STRING=mongodb://myusername:mypassword@mongodb:27017
       - DB_NAME=users_db
-      - CLIENT_ID=users-client
-      - BROKER=kafka:9092
-      - GROUP_ID=users-consumer
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
     networks:
       - "ev"
     depends_on:
-      - kafka
+      - redis
 
   products:
     build: ./api-product
+    container_name: "products-microservice"
     restart: always
     environment:    
       - DB_CONN_STRING=mongodb://myusername:mypassword@mongodb:27017
       - DB_NAME=prodcuts_db
-      - CLIENT_ID=products-client
-      - BROKER=kafka:9092
-      - GROUP_ID=products-consumer
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
     networks:
       - ev
     depends_on:
-      - kafka
+      - redis
 
   inventory:
     build: ./api-inventory
+    container_name: "inventory-microservice"
     restart: always
     environment:  
       - DB_CONN_STRING=mongodb://myusername:mypassword@mongodb:27017
       - DB_NAME=inventory_db
-      - CLIENT_ID=inventory-client
-      - BROKER=kafka:9092
-      - GROUP_ID=inventory-consumer
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
     networks:
       - ev
     depends_on:
-      - kafka
+      - redis
 
   order:
     build: ./api-orders
+    container_name: "order-microservice"
     restart: always
     environment:
       - DB_CONN_STRING=mongodb://myusername:mypassword@mongodb:27017
       - DB_NAME=order_db
-      - CLIENT_ID=order-client
-      - BROKER=kafka:9092
-      - GROUP_ID=order-consumer
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
     networks:
       - ev
     depends_on:
-      - kafka
+      - redis
 
   payment:
     build: ./api-payment
+    container_name: "payment-microservice"
     restart: always
     environment:
       - DB_CONN_STRING=mongodb://myusername:mypassword@mongodb:27017
       - DB_NAME=payments_db
-      - CLIENT_ID=payment-client
-      - BROKER=kafka:9092
-      - GROUP_ID=payment-consumer
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
     networks:
       - ev
     depends_on:
-      - kafka
+      - redis
 
   # Api gateway
   gateway:
     build: ./api-gateway
+    container_name: "gateway"
     restart: always
     environment:
     - DOMAIN=mydomain
@@ -135,26 +117,16 @@ services:
     - API_VERSION=v1
     - JWT_SECRET=mysecret
     - ALGORITHM=HS256
-    - BROKER=kafka:9092
+    - REDIS_HOST=redis
+    - REDIS_PORT=6379
     - USERS_MICROSERVICE_NAME=users-microservice
-    - USERS_CLIENT_ID=users-client
-    - USERS_GROUP_ID=users-consumer
     - PRODUCT_MICROSERVICE_NAME=product-microservice
-    - PRODUCT_CLIENT_ID=products-client
-    - PRODUCT_GROUP_ID=products-consumer
     - INVENTORY_MICROSERVICE_NAME=inventory-microservice
-    - INVENTORY_CLIENT_ID=inventory-client
-    - INVENTORY_GROUP_ID=inventory-consumer
     - ORDER_MICROSERVICE_NAME=order-microservice
-    - ORDER_CLIENT_ID=order-client
-    - ORDER_GROUP_ID=order-consumer
     - PAYMENT_MICROSERVICE_NAME=payment-microservice
-    - PAYMENT_CLIENT_ID=payment-client
-    - PAYMENT_GROUP_ID=payment-consumer
     ports:
       - "3000:3000"
     networks:
       - ev
     depends_on:
-      - kafka
-    hostname: gateway
+      - redis

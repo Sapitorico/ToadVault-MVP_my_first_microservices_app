@@ -96,7 +96,6 @@ export class UsersServices {
         message: "'name' must be a string",
       };
     }
-    console.log('entro en validacion de usuairo');
     const validate = this.validateDataLogin(data);
     if (!validate.success) {
       return validate;

@@ -1,20 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ClientKafka } from '@nestjs/microservices';
+import { ClientProxy } from '@nestjs/microservices';
 
 @Injectable()
 export class PaymentProvider {
   constructor(
     @Inject(process.env.PAYMENT_MICROSERVICE_NAME)
-    private paymentClient: ClientKafka,
+    private paymentClient: ClientProxy,
   ) {}
-
-  /**
-   * Initializes the module and sets up the payment client.
-   */
-  async onModuleInit() {
-    this.paymentClient.subscribeToResponseOf('payment');
-    await this.paymentClient.connect();
-  }
 
   /**
    * Generates a payment for a user.
