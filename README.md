@@ -13,6 +13,7 @@ ToadVault-MVP_microservices es una caja registradora web basada en microservicio
 - **Message Broker:** Redis
 - **Contenedorización:** Docker
 - **Gestión de Dependencias:** Docker Compose
+- **Documentación de API:** Swagger
 
 ## Requisitos Previos 🛠️
 
