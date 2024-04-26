@@ -19,8 +19,8 @@ async function bootstrap() {
     .addTag('inventory')
     .addTag('order')
     .addTag('payment')
-    .addServer(`http://localhost:3000/${apiPrefix}/${apiVersion}`, 'Local environment')
-    .addServer(`https://${domain}`, 'Production')
+    .addServer(`http://localhost:3000`, 'Local environment')
+    .addServer(`http://${domain}`, 'Production')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup(`${apiPrefix}`, app, document);
