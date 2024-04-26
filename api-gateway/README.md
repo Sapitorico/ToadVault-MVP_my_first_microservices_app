@@ -34,32 +34,23 @@ JWT_SECRET=your_jwt_secret
 ALGORITHM=your_algorithm
 
 # Microservices
-BROKER=your_broker
+REDIS_HOST=your_redis_host
+REDIS_PORT=your_redis_port
 
 # users microservice
 USERS_MICROSERVICE_NAME=your_users_microservice_name
-USERS_CLIENT_ID=your_users_client_id
-USERS_GROUP_ID=your_users_group_id
 
 # product microservice
 PRODUCT_MICROSERVICE_NAME=your_product_microservice_name
-PRODUCT_CLIENT_ID=your_product_client_id
-PRODUCT_GROUP_ID=your_product_group_id
 
 # inventory microservice
 INVENTORY_MICROSERVICE_NAME=your_inventory_microservice_name
-INVENTORY_CLIENT_ID=your_inventory_client_id
-INVENTORY_GROUP_ID=your_inventory_group_id
 
 # order microservice
 ORDER_MICROSERVICE_NAME=your_order_microservice_name
-ORDER_CLIENT_ID=your_order_client_id
-ORDER_GROUP_ID=your_order_group_id
 
 # payment microservice
 PAYMENT_MICROSERVICE_NAME=your_payment_microservice_name
-PAYMENT_CLIENT_ID=your_payment_client_id
-PAYMENT_GROUP_ID=your_payment_group_id
 ```
 
 ## Running the app

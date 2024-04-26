@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ClientKafka } from '@nestjs/microservices';
+import { ClientProxy } from '@nestjs/microservices';
 import { inventoryData } from 'src/models/inventory.model';
 import { productData } from 'src/models/product.model';
 
@@ -7,22 +7,8 @@ import { productData } from 'src/models/product.model';
 export class InventoryProvider {
   constructor(
     @Inject(process.env.INVENTORY_MICROSERVICE_NAME)
-    private inventoryClient: ClientKafka,
+    private inventoryClient: ClientProxy,
   ) {}
-
-  /**
-   * Initializes the module and subscribes to response events.
-   * Connects the inventory client to the server.
-   */
-  async onModuleInit() {
-    this.inventoryClient.subscribeToResponseOf('add_new_item');
-    this.inventoryClient.subscribeToResponseOf('update_itme');
-    this.inventoryClient.subscribeToResponseOf('get_inventory');
-    this.inventoryClient.subscribeToResponseOf('get_item_by_barcode');
-    this.inventoryClient.subscribeToResponseOf('update_inventory');
-    this.inventoryClient.subscribeToResponseOf('get_item_by_barcode_for_order');
-    await this.inventoryClient.connect();
-  }
 
   /**
    * Adds a new item to the inventory.

@@ -17,10 +17,9 @@ Para configurar el entorno de la aplicación, necesitarás crear un archivo `.en
 DB_CONN_STRING=mongodb://root:evolina553@mongodb:27017
 DB_NAME=inventory_db
 
-#Microservice config
-CLIENT_ID=inventory-client
-BROKER=kafka:9092
-GROUP_ID=inventory-consumer
+# Microservice config
+REDIS_HOST=your_redis_host
+REDIS_PORT=your_redis_port
 ```
 
 ## Running the app

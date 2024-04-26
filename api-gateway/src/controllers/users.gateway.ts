@@ -27,9 +27,7 @@ export class UsersController {
   })
   @Post('register')
   async Register(@Body() user: User, @Res() res: Response) {
-    console.log('entor en el gateway');
     const response = await this.usersProvider.registerUser(user);
-    console.log(response);
     return res.status(response.status as number).json({
       success: response.success,
       message: response.message,

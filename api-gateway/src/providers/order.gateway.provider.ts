@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ClientKafka } from '@nestjs/microservices';
+import { ClientProxy } from '@nestjs/microservices';
 import { inventoryData } from 'src/models/inventory.model';
 
 /**
@@ -9,20 +9,8 @@ import { inventoryData } from 'src/models/inventory.model';
 export class OrderProvider {
   constructor(
     @Inject(process.env.ORDER_MICROSERVICE_NAME)
-    private orderClient: ClientKafka,
+    private orderClient: ClientProxy,
   ) {}
-
-  /**
-   * Initializes the module and subscribes to response events.
-   * Connects the order client to the server.
-   */
-  async onModuleInit() {
-    this.orderClient.subscribeToResponseOf('order');
-    this.orderClient.subscribeToResponseOf('get_order');
-    this.orderClient.subscribeToResponseOf('remove_item');
-    this.orderClient.subscribeToResponseOf('cancel_order');
-    await this.orderClient.connect();
-  }
 
   /**
    * Generates an order for a user.

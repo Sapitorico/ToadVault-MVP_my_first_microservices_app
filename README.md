@@ -4,13 +4,13 @@
 
 # 🐸 ToadVault-MVP_microservices 🛒
 
-ToadVault-MVP_microservices es una caja registradora web basada en microservicios, desarrollada en Nest.js y conectada a través de Kafka. Utiliza una arquitectura de microservicios para gestionar diferentes aspectos del negocio, como usuarios, productos, inventario, órdenes y pagos.
+ToadVault-MVP_microservices es una caja registradora web basada en microservicios, desarrollada en Nest.js y conectada a través de Redis. Utiliza una arquitectura de microservicios para gestionar diferentes aspectos del negocio, como usuarios, productos, inventario, órdenes y pagos.
 
 ## Tecnologías Principales 🚀
 
 - **Framework Backend:** Nest.js
 - **Base de Datos:** MongoDB
-- **Message Broker:** Kafka
+- **Message Broker:** Redis
 - **Contenedorización:** Docker
 - **Gestión de Dependencias:** Docker Compose
 
@@ -80,10 +80,6 @@ El microservicio de API Gateway actúa como punto de entrada principal para la a
 
 MongoDB es un sistema de base de datos NoSQL orientado a documentos. En esta aplicación, se utiliza para almacenar datos relacionados con usuarios, productos, inventario, órdenes y otros aspectos del negocio.
 
-### Kafka 📨
+### Redis 🔄
 
-Kafka es una plataforma de transmisión distribuida que proporciona una arquitectura de mensajería de alto rendimiento y tolerante a fallos. Se utiliza como broker de mensajes para la comunicación entre los microservicios de la aplicación.
-
-### ZooKeeper 🦓
-
-ZooKeeper es un servicio de coordinación distribuida utilizado para la gestión de configuraciones, elección de líderes y otros aspectos de la infraestructura distribuida. En esta aplicación, se utiliza para coordinar y gestionar clústeres de Kafka.
+Redis es una base de datos en memoria de código abierto que se utiliza como almacén de datos en esta aplicación. Se utiliza para gestionar la mensajería y la comunicación entre los diferentes microservicios de la aplicación
