@@ -1,6 +1,6 @@
-<p align="center">
-  <img src="https://github.com/Sapitorico/ToadVault-MVP_microservices/assets/105575956/576592a1-fb40-482d-9a82-c9e818f06abe" alt="Descripción de la imagen" width="500" height="500">
-</p>
+<div align="center">
+  <img src="https://github.com/Sapitorico/ToadVault-MVP_my_first_microservices_app/assets/105575956/31dac66d-a3ff-40bc-bab3-35199f8a1bff" alt="Descripción de la imagen" width="500" height="500">
+</div>
 
 # 🐸 ToadVault-MVP_microservices 🛒
 
